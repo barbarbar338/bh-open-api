@@ -3,28 +3,31 @@ import { LegendsService } from "./legends.service";
 import { APIRes } from "api-types";
 import { SyncLegendDTO } from "./dto/syncLegend.dto";
 import { GetLegendByIDDTO } from "./dto/getLegendByID.dto";
+import { GetLegendByNameDTO } from "./dto/getLegendByName.dto";
 
 @Controller("legends")
 export class LegendsController {
     constructor(private readonly legendsService: LegendsService) {}
-
     @Get("ping")
     public returnPing(): APIRes {
         return this.legendsService.returnPing();
     }
-
     @Get("all")
     public async getAllLegends(): Promise<APIRes> {
         return this.legendsService.getAllLegends();
     }
-
-    @Get(":legend_id")
+    @Get("id/:legend_id")
     public async getLegendByID(
         @Param() getLegendByIDDTO: GetLegendByIDDTO,
     ): Promise<APIRes> {
         return this.legendsService.getLegendByID(getLegendByIDDTO);
     }
-
+    @Get("name/:legend_name")
+    public async getLegendByName(
+        @Param() getLegendByNameDTO: GetLegendByNameDTO,
+    ): Promise<APIRes> {
+        return this.legendsService.getLegendByName(getLegendByNameDTO);
+    }
     @Get("sync")
     public async syncLegend(
         @Query() syncLegendDTO: SyncLegendDTO,

@@ -6,6 +6,7 @@ import { LegendsEntity } from "./legends.entity";
 import { BHAPIService } from "src/libs/BHAPI";
 import { SyncLegendDTO } from "./dto/syncLegend.dto";
 import { GetLegendByIDDTO } from "./dto/getLegendByID.dto";
+import { GetLegendByNameDTO } from "./dto/getLegendByName.dto";
 
 @Injectable()
 export class LegendsService {
@@ -31,7 +32,6 @@ export class LegendsService {
         const legendData = await this.legendsRepository.findOne({ legend_id });
         return legendData;
     }
-
     public async syncLegend({ legend_id }: SyncLegendDTO): Promise<APIRes> {
         const legendData = await this.bhAPIService.getLegendByID(legend_id);
         const isExists = await this.isExists(legend_id);
@@ -62,6 +62,32 @@ export class LegendsService {
                 statusCode: HttpStatus.OK,
                 message: `${legendData.bio_name} from database`,
                 data: legendData,
+            };
+        }
+    }
+    public async getLegendByName({
+        legend_name,
+    }: GetLegendByNameDTO): Promise<APIRes> {
+        const legendData = await this.legendsRepository.findOne({
+            legend_name_key: legend_name,
+        });
+        if (legendData) {
+            delete legendData._id;
+            return {
+                statusCode: HttpStatus.OK,
+                message: `${legendData.bio_name} from database`,
+                data: legendData,
+            };
+        } else {
+            const newData = await this.bhAPIService.getLegendByName(
+                legend_name,
+            );
+            const repository = this.legendsRepository.create(newData);
+            await this.legendsRepository.save(repository);
+            return {
+                statusCode: HttpStatus.OK,
+                message: `${newData.bio_name} sync`,
+                data: newData,
             };
         }
     }
