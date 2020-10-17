@@ -145,18 +145,9 @@ export class BHAPIService {
         return id;
     }
     private async getBHIDFromName(name: string): Promise<number> {
-        const playerArray = (await fetch(
-            `https://api.brawlhalla.com/rankings/1v1/all/1?name=${encodeURIComponent(
-                name,
-            )}&api_key=${CONFIG.BH_API_KEY}`,
-        )
-            .then(r => {
-                if (r.ok) return r.json();
-                else throw new NotFoundException("Player not found");
-            })
-            .catch(() => {
-                throw new NotFoundException("Player not found");
-            })) as IPlayerStats[];
+        const playerArray = (await this.makeAPIRequest("/rankings/1v1/all/1", {
+            name,
+        })) as IPlayerStats[];
         const res = playerArray.filter(
             p =>
                 decodeURIComponent(escape(p.name)).toLowerCase() ==

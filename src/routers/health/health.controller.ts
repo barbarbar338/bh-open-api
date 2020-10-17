@@ -30,10 +30,7 @@ export class HealthController {
             (): Promise<HealthIndicatorResult> =>
                 this.dns.pingCheck("google", "https://google.com"),
             (): Promise<HealthIndicatorResult> =>
-                this.dns.pingCheck(
-                    "brawlhallaAPI",
-                    CONFIG.BH_API_BASE,
-                ),
+                this.dns.pingCheck("brawlhallaAPI", CONFIG.BH_API_BASE),
         ]);
     }
 }
