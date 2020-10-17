@@ -210,11 +210,9 @@ export class BHAPIService {
     public async get2v2Rankings({
         region,
         page,
-        name,
     }: IRankingsOptions): Promise<IRanking1v1> {
         const res = (await this.makeAPIRequest(
             `/rankings/2v2/${region.toLocaleLowerCase()}/${page}`,
-            { name },
         )) as IRanking1v1;
         return res;
     }
