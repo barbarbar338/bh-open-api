@@ -4,9 +4,10 @@ import { PlayersService } from "./players.service";
 import { BHAPIService } from "src/libs/BHAPI";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { StatsEntity } from "./stats.entity";
+import { RankedEntity } from "./ranked.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([StatsEntity])],
+    imports: [TypeOrmModule.forFeature([StatsEntity, RankedEntity])],
     controllers: [PlayersController],
     providers: [PlayersService, BHAPIService],
     exports: [TypeOrmModule, PlayersService]

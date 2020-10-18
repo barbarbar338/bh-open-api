@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Controller, Get, Query, Param } from "@nestjs/common";
 import { PlayersService } from "./players.service";
 import { APIRes } from "api-types";
 import { SyncDataDTO } from "./dto/syncData.dto";
@@ -13,5 +13,18 @@ export class PlayersController {
     @Get("stats/sync")
     public async syncStats(@Query() syncDataDTO: SyncDataDTO): Promise<APIRes> {
         return this.playersService.syncStats(syncDataDTO);
+    }
+    @Get("stats/bhid/:brawlhalla_id")
+    public async getBHStatsByBHID(@Param() syncDataDTO: SyncDataDTO): Promise<APIRes> {
+        return this.playersService.getBHStatsByBHID(syncDataDTO);
+    }
+
+    @Get("ranked/sync")
+    public async syncRanked(@Query() syncDataDTO: SyncDataDTO): Promise<APIRes> {
+        return this.playersService.syncRanked(syncDataDTO);
+    }
+    @Get("ranked/bhid/:brawlhalla_id")
+    public async getBHRankedByBHID(@Param() syncDataDTO: SyncDataDTO): Promise<APIRes> {
+        return this.playersService.getBHRankedByBHID(syncDataDTO);
     }
 }

@@ -23,6 +23,7 @@ import xml from "xml2js";
 
 @Injectable()
 export class BHAPIService {
+    //#region utilities
     private async makeAPIRequest(
         path: string,
         queries?: UnknownObject,
@@ -131,6 +132,9 @@ export class BHAPIService {
                 throw new BadRequestException("Not a valid Steam profile URL");
         } else throw new BadRequestException("Not a valid Steam profile URL");
     }
+    //#endregion
+    
+    //#region get bh id
     private async getBHIDFromSteamID(
         steamID: number,
     ): Promise<BHIDFromSteamID> {
@@ -156,6 +160,9 @@ export class BHAPIService {
         if (res[0]) return res[0].brawlhalla_id;
         else throw new NotFoundException("Player not found");
     }
+    //#endregion
+
+    //#region stats and ranked
     public async getStatsByBHID(bhid: number): Promise<IPlayerStats> {
         const res = (await this.makeAPIRequest(
             `/player/${bhid}/stats`,
@@ -192,6 +199,9 @@ export class BHAPIService {
         const bhID = await this.getBHIDFromName(name);
         return this.getStatsByBHID(bhID);
     }
+    //#endregion
+
+    //#region others
     public async getClanByID(clanID: number): Promise<IClan> {
         const res = (await this.makeAPIRequest(`/clan/${clanID}`)) as IClan;
         return res;
@@ -228,6 +238,9 @@ export class BHAPIService {
         )) as IRanking1v1;
         return res;
     }
+    //#endregion
+
+    //#region legends
     public async getAllLegends(): Promise<IStaticAllLegends[]> {
         const res = (await this.makeAPIRequest(
             "/legend/all",
@@ -252,6 +265,9 @@ export class BHAPIService {
         )) as IStaticLegend;
         return res;
     }
+    //#endregion
+
+    //#region glory
     public async getGloryByBHID(bhid: number): Promise<IGloryData> {
         const rankedData = await this.getRankedByBHID(bhid);
         let { games, wins } = rankedData;
@@ -284,4 +300,5 @@ export class BHAPIService {
         const bhid = await this.getBHIDFromName(name);
         return this.getGloryByBHID(bhid);
     }
+    //#endregion
 }

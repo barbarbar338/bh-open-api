@@ -15,6 +15,8 @@ export class LegendsService {
         private readonly legendsRepository: MongoRepository<LegendsEntity>,
         private readonly bhAPIService: BHAPIService,
     ) {}
+
+    //#region helpers
     public returnPing(): APIRes {
         return {
             statusCode: HttpStatus.OK,
@@ -32,6 +34,9 @@ export class LegendsService {
         const legendData = await this.legendsRepository.findOne({ legend_id });
         return legendData;
     }
+    //#endregion
+    
+    //#region get legend
     public async syncLegend({ legend_id }: SyncLegendDTO): Promise<APIRes> {
         const legendData = await this.bhAPIService.getLegendByID(legend_id);
         const isExists = await this.isExists(legend_id);
@@ -104,4 +109,5 @@ export class LegendsService {
             data: allLegends,
         };
     }
+    //#endregion
 }
