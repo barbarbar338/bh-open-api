@@ -27,4 +27,13 @@ export class PlayersController {
     public async getBHRankedByBHID(@Param() syncDataDTO: SyncDataDTO): Promise<APIRes> {
         return this.playersService.getBHRankedByBHID(syncDataDTO);
     }
+
+    @Get("glory/sync")
+    public async syncGlory(@Query() syncDataDTO: SyncDataDTO): Promise<APIRes> {
+        return this.playersService.syncGlory(syncDataDTO);
+    }
+    @Get("glory/bhid/:brawlhalla_id")
+    public async getBHGloryByBHID(@Param() syncDataDTO: SyncDataDTO): Promise<APIRes> {
+        return this.playersService.getBHGloryByBHID(syncDataDTO);
+    }
 }

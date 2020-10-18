@@ -286,7 +286,7 @@ export class BHAPIService {
                       rating: this.gloryFromBestRating(bestElo),
                   };
         const eloReset = this.newEloFromOldElo(rankedData.rating);
-        return { bestElo, eloReset, glory };
+        return { brawlhalla_id: bhid, name: rankedData.name, bestElo, eloReset, glory };
     }
     public async getGloryBySteamID(steamid: number) {
         const bhdata = await this.getBHIDFromSteamID(steamid);

@@ -18,6 +18,8 @@ declare module "api-types" {
         id: number;
     }
     export interface IGloryData {
+        brawlhalla_id: number;
+        name: string;
         bestElo: number;
         eloReset: number;
         glory: {
