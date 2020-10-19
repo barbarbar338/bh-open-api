@@ -4,7 +4,7 @@ import { BHAPIService } from "src/libs/BHAPI";
 import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { StatsEntity } from "./stats.entity";
-import { GetDataByBHIDDTO } from "./dto/getDataByBHID.dto";
+import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 
 @Injectable()
 export class StatsService {
@@ -58,7 +58,7 @@ export class StatsService {
         if (!statsData) {
             return this.syncStats({ brawlhalla_id });
         } else {
-            if (Date.now() - statsData.lastSynced > 1000 * 60 * 5)
+            if (Date.now() - statsData.lastSynced > 1000 * 60 * 10)
                 return this.syncStats({ brawlhalla_id });
             else {
                 delete statsData._id;

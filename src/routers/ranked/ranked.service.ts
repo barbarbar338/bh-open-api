@@ -4,7 +4,7 @@ import { BHAPIService } from "src/libs/BHAPI";
 import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RankedEntity } from "./ranked.entity";
-import { GetDataByBHIDDTO } from "./dto/getDataByBHID.dto";
+import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 
 @Injectable()
 export class RankedService {
@@ -62,7 +62,7 @@ export class RankedService {
         if (!rankedData) {
             return this.syncRanked({ brawlhalla_id });
         } else {
-            if (Date.now() - rankedData.lastSynced > 1000 * 60 * 5)
+            if (Date.now() - rankedData.lastSynced > 1000 * 60 * 10)
                 return this.syncRanked({ brawlhalla_id });
             else {
                 delete rankedData._id;

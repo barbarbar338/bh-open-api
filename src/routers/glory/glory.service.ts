@@ -4,7 +4,7 @@ import { BHAPIService } from "src/libs/BHAPI";
 import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GloryEntity } from "./glory.entity";
-import { GetDataByBHIDDTO } from "./dto/getDataByBHID.dto";
+import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 
 @Injectable()
 export class GloryService {
@@ -58,7 +58,7 @@ export class GloryService {
         if (!gloryData) {
             return this.syncGlory({ brawlhalla_id });
         } else {
-            if (Date.now() - gloryData.lastSynced > 1000 * 60 * 5)
+            if (Date.now() - gloryData.lastSynced > 1000 * 60 * 10)
                 return this.syncGlory({ brawlhalla_id });
             else {
                 delete gloryData._id;

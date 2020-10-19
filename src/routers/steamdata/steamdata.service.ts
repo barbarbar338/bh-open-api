@@ -4,7 +4,8 @@ import { BHAPIService } from "src/libs/BHAPI";
 import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { SteamDataEntity } from "./steamdata.entity";
-import { GetDataBySteamIDDTO } from "./dto/getDataBySteamID.dto";
+import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
+import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 
 @Injectable()
 export class SteamDataService {
@@ -74,5 +75,13 @@ export class SteamDataService {
                 data: steamData,
             };
         }
+    }
+    public async getSteamDataByURL({
+        steam_url,
+    }: GetDataBySteamURLDTO): Promise<APIRes> {
+        const { steam_id } = await this.bhAPIService.getSteamDataByURL(
+            steam_url,
+        );
+        return this.getSteamDataByID({ steam_id });
     }
 }

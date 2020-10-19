@@ -1,8 +1,8 @@
 import { Controller, Get, Query } from "@nestjs/common";
 import { LegendsService } from "./legends.service";
 import { APIRes } from "api-types";
-import { GetLegendByIDDTO } from "./dto/getLegendByID.dto";
-import { GetLegendByNameDTO } from "./dto/getLegendByName.dto";
+import { GetLegendByIDDTO } from "src/dto/getLegendByID.dto";
+import { GetLegendByNameDTO } from "src/dto/getLegendByName.dto";
 
 @Controller("legends")
 export class LegendsController {

@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from "@nestjs/common";
 import { GloryService } from "./glory.service";
 import { APIRes } from "api-types";
-import { GetDataByBHIDDTO } from "./dto/getDataByBHID.dto";
+import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 
 @Controller("glory")
 export class GloryController {
@@ -16,8 +16,8 @@ export class GloryController {
     ): Promise<APIRes> {
         return this.gloryService.syncGlory(getDataByBHIDDTO);
     }
-    @Get("bhid")
-    public async getBHGloryByBHID(
+    @Get("id")
+    public async getGloryByID(
         @Query() getDataByBHIDDTO: GetDataByBHIDDTO,
     ): Promise<APIRes> {
         return this.gloryService.getGloryByBHID(getDataByBHIDDTO);

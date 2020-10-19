@@ -4,8 +4,8 @@ import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LegendsEntity } from "./legends.entity";
 import { BHAPIService } from "src/libs/BHAPI";
-import { GetLegendByIDDTO } from "./dto/getLegendByID.dto";
-import { GetLegendByNameDTO } from "./dto/getLegendByName.dto";
+import { GetLegendByIDDTO } from "src/dto/getLegendByID.dto";
+import { GetLegendByNameDTO } from "src/dto/getLegendByName.dto";
 
 @Injectable()
 export class LegendsService {
