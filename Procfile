@@ -1,1 +1,0 @@
-prod: npm run start:prod
