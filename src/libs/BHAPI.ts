@@ -19,7 +19,7 @@ import {
 } from "api-types";
 import fetch from "node-fetch";
 import CONFIG from "src/config";
-import xml from "xml2js";
+import * as xml from "xml2js";
 
 @Injectable()
 export class BHAPIService {
@@ -91,7 +91,7 @@ export class BHAPIService {
             return Math.floor(1400 + (elo - 1400) / (3 - (3000 - elo) / 800));
         return elo;
     }
-    private async getSteamDataByURL(profileUrl: string): Promise<ISteamData> {
+    public async getSteamDataByURL(profileUrl: string): Promise<ISteamData> {
         const test = /(steamcommunity\.com\/(id|profiles)\/([^\s]+))/i;
         const match = test.exec(profileUrl);
         if (match) {
@@ -131,7 +131,7 @@ export class BHAPIService {
                 throw new BadRequestException("Not a valid Steam profile URL");
         } else throw new BadRequestException("Not a valid Steam profile URL");
     }
-    private async getSteamDataByID(steamID: string): Promise<ISteamData> {
+    public async getSteamDataByID(steamID: string): Promise<ISteamData> {
         const res = await fetch(
             "https://steamcommunity.com/profiles/" + steamID + "?xml=1",
         )
@@ -158,9 +158,7 @@ export class BHAPIService {
             };
         else throw new BadRequestException("Not a valid Steam profile ID");
     }
-    private async getBHIDFromSteamID(
-        steamID: string,
-    ): Promise<BHIDFromSteamID> {
+    public async getBHIDFromSteamID(steamID: string): Promise<BHIDFromSteamID> {
         const res = (await this.makeAPIRequest("/search", {
             steamid: steamID,
         })) as BHIDFromSteamID;
