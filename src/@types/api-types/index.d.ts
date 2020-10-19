@@ -120,7 +120,7 @@ declare module "api-types" {
         wins: number;
         games: number;
         teamname: string;
-        region: number;
+        region: RankedRegion;
         global_rank: number;
     }
     export interface IClan {

@@ -6,6 +6,7 @@ import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { StatsEntity } from "./stats.entity";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
+import { RateLimit } from "nestjs-rate-limit";
 
 @Controller("stats")
 export class StatsController {
@@ -15,6 +16,7 @@ export class StatsController {
         return this.statsService.returnPing();
     }
     @Get("sync")
+    @RateLimit({ points: 1, duration: 60 * 2 })
     public async syncStats(
         @Query() getDataByBHIDDTO: GetDataByBHIDDTO,
     ): Promise<APIRes<StatsEntity>> {
