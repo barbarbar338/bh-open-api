@@ -3,7 +3,6 @@ import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
 
 @Entity({ name: "StatsEntity" })
 export class StatsEntity {
-    
     @ObjectIdColumn()
     _id: ObjectID;
 

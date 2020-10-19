@@ -27,13 +27,19 @@ export class RankedService {
         return !!rankedData;
     }
     private async getRankedData(brawlhalla_id: number): Promise<RankedEntity> {
-        const rankedData = await this.rankedRepository.findOne({ brawlhalla_id });
+        const rankedData = await this.rankedRepository.findOne({
+            brawlhalla_id,
+        });
         return rankedData;
     }
-    public async syncRanked({ brawlhalla_id }: GetDataByBHIDDTO): Promise<APIRes> {
-        const rankedData = await this.bhAPIService.getRankedByBHID(brawlhalla_id);
+    public async syncRanked({
+        brawlhalla_id,
+    }: GetDataByBHIDDTO): Promise<APIRes> {
+        const rankedData = await this.bhAPIService.getRankedByBHID(
+            brawlhalla_id,
+        );
         const isExists = await this.isRankedExists(brawlhalla_id);
-        const data = { ...rankedData, lastSynced: Date.now() }
+        const data = { ...rankedData, lastSynced: Date.now() };
         if (isExists) {
             await this.rankedRepository.updateOne(
                 { brawlhalla_id },
@@ -49,12 +55,15 @@ export class RankedService {
             data: data,
         };
     }
-    public async getRankedByBHID({ brawlhalla_id }: GetDataByBHIDDTO): Promise<APIRes> {
+    public async getRankedByBHID({
+        brawlhalla_id,
+    }: GetDataByBHIDDTO): Promise<APIRes> {
         const rankedData = await this.getRankedData(brawlhalla_id);
         if (!rankedData) {
             return this.syncRanked({ brawlhalla_id });
         } else {
-            if (Date.now() - rankedData.lastSynced > 1000 * 60 * 5) return this.syncRanked({ brawlhalla_id });
+            if (Date.now() - rankedData.lastSynced > 1000 * 60 * 5)
+                return this.syncRanked({ brawlhalla_id });
             else {
                 delete rankedData._id;
                 return {

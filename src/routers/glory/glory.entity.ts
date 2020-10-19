@@ -2,7 +2,6 @@ import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
 
 @Entity({ name: "GloryEntity" })
 export class GloryEntity {
-    
     @ObjectIdColumn()
     _id: ObjectID;
 

@@ -4,7 +4,6 @@ import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LegendsEntity } from "./legends.entity";
 import { BHAPIService } from "src/libs/BHAPI";
-import { SyncLegendDTO } from "./dto/syncLegend.dto";
 import { GetLegendByIDDTO } from "./dto/getLegendByID.dto";
 import { GetLegendByNameDTO } from "./dto/getLegendByName.dto";
 
@@ -15,8 +14,6 @@ export class LegendsService {
         private readonly legendsRepository: MongoRepository<LegendsEntity>,
         private readonly bhAPIService: BHAPIService,
     ) {}
-
-    //#region helpers
     public returnPing(): APIRes {
         return {
             statusCode: HttpStatus.OK,
@@ -34,10 +31,7 @@ export class LegendsService {
         const legendData = await this.legendsRepository.findOne({ legend_id });
         return legendData;
     }
-    //#endregion
-    
-    //#region get legend
-    public async syncLegend({ legend_id }: SyncLegendDTO): Promise<APIRes> {
+    public async syncLegend({ legend_id }: GetLegendByIDDTO): Promise<APIRes> {
         const legendData = await this.bhAPIService.getLegendByID(legend_id);
         const isExists = await this.isExists(legend_id);
         if (isExists) {
@@ -109,5 +103,4 @@ export class LegendsService {
             data: allLegends,
         };
     }
-    //#endregion
 }

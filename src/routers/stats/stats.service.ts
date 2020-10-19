@@ -30,10 +30,12 @@ export class StatsService {
         const statsData = await this.statsRepository.findOne({ brawlhalla_id });
         return statsData;
     }
-    public async syncStats({ brawlhalla_id }: GetDataByBHIDDTO): Promise<APIRes> {
+    public async syncStats({
+        brawlhalla_id,
+    }: GetDataByBHIDDTO): Promise<APIRes> {
         const statsData = await this.bhAPIService.getStatsByBHID(brawlhalla_id);
         const isExists = await this.isStatsExists(brawlhalla_id);
-        const data = { ...statsData, lastSynced: Date.now() }
+        const data = { ...statsData, lastSynced: Date.now() };
         if (isExists) {
             await this.statsRepository.updateOne(
                 { brawlhalla_id },
@@ -49,12 +51,15 @@ export class StatsService {
             data: data,
         };
     }
-    public async getStatsByBHID({ brawlhalla_id }: GetDataByBHIDDTO): Promise<APIRes> {
+    public async getStatsByBHID({
+        brawlhalla_id,
+    }: GetDataByBHIDDTO): Promise<APIRes> {
         const statsData = await this.getStatsData(brawlhalla_id);
         if (!statsData) {
             return this.syncStats({ brawlhalla_id });
         } else {
-            if (Date.now() - statsData.lastSynced > 1000 * 60 * 5) return this.syncStats({ brawlhalla_id });
+            if (Date.now() - statsData.lastSynced > 1000 * 60 * 5)
+                return this.syncStats({ brawlhalla_id });
             else {
                 delete statsData._id;
                 return {

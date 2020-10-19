@@ -10,12 +10,12 @@ declare module "api-types" {
     }
     export interface ISteamData {
         name: string;
-        id: number;
-        profile: string;
+        steam_id: string;
+        steam_url: string;
     }
     export interface BHIDFromSteamID {
         name: string;
-        id: number;
+        brawlhalla_id: number;
     }
     export interface IGloryData {
         brawlhalla_id: number;

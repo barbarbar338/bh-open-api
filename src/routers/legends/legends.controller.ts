@@ -1,7 +1,6 @@
 import { Controller, Get, Query } from "@nestjs/common";
 import { LegendsService } from "./legends.service";
 import { APIRes } from "api-types";
-import { SyncLegendDTO } from "./dto/syncLegend.dto";
 import { GetLegendByIDDTO } from "./dto/getLegendByID.dto";
 import { GetLegendByNameDTO } from "./dto/getLegendByName.dto";
 
@@ -30,8 +29,8 @@ export class LegendsController {
     }
     @Get("sync")
     public async syncLegend(
-        @Query() syncLegendDTO: SyncLegendDTO,
+        @Query() getLegendByIDDTO: GetLegendByIDDTO,
     ): Promise<APIRes> {
-        return this.legendsService.syncLegend(syncLegendDTO);
+        return this.legendsService.syncLegend(getLegendByIDDTO);
     }
 }

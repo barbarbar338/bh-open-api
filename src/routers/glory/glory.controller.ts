@@ -11,11 +11,15 @@ export class GloryController {
         return this.gloryService.returnPing();
     }
     @Get("sync")
-    public async syncGlory(@Query() getDataByBHIDDTO: GetDataByBHIDDTO): Promise<APIRes> {
+    public async syncGlory(
+        @Query() getDataByBHIDDTO: GetDataByBHIDDTO,
+    ): Promise<APIRes> {
         return this.gloryService.syncGlory(getDataByBHIDDTO);
     }
     @Get("bhid")
-    public async getBHGloryByBHID(@Query() getDataByBHIDDTO: GetDataByBHIDDTO): Promise<APIRes> {
+    public async getBHGloryByBHID(
+        @Query() getDataByBHIDDTO: GetDataByBHIDDTO,
+    ): Promise<APIRes> {
         return this.gloryService.getGloryByBHID(getDataByBHIDDTO);
     }
 }

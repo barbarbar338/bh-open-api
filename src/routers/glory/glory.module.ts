@@ -9,6 +9,6 @@ import { GloryEntity } from "./glory.entity";
     imports: [TypeOrmModule.forFeature([GloryEntity])],
     controllers: [GloryController],
     providers: [GloryService, BHAPIService],
-    exports: [TypeOrmModule, GloryService]
+    exports: [TypeOrmModule, GloryService],
 })
 export class GloryModule {}

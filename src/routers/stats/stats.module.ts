@@ -9,6 +9,6 @@ import { StatsEntity } from "./stats.entity";
     imports: [TypeOrmModule.forFeature([StatsEntity])],
     controllers: [StatsController],
     providers: [StatsService, BHAPIService],
-    exports: [TypeOrmModule, StatsService]
+    exports: [TypeOrmModule, StatsService],
 })
 export class StatsModule {}

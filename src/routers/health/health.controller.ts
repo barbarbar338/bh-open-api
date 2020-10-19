@@ -17,12 +17,10 @@ export class HealthController {
         private readonly dns: DNSHealthIndicator,
         private readonly healthService: HealthService,
     ) {}
-
     @Get("ping")
     public returnPing(): APIRes {
         return this.healthService.returnPing();
     }
-
     @Get()
     @HealthCheck()
     public check(): Promise<HealthCheckResult> {

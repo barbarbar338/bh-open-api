@@ -11,11 +11,15 @@ export class StatsController {
         return this.statsService.returnPing();
     }
     @Get("sync")
-    public async syncStats(@Query() getDataByBHIDDTO: GetDataByBHIDDTO): Promise<APIRes> {
+    public async syncStats(
+        @Query() getDataByBHIDDTO: GetDataByBHIDDTO,
+    ): Promise<APIRes> {
         return this.statsService.syncStats(getDataByBHIDDTO);
     }
     @Get("bhid")
-    public async getStatsByBHID(@Query() getDataByBHIDDTO: GetDataByBHIDDTO): Promise<APIRes> {
+    public async getStatsByBHID(
+        @Query() getDataByBHIDDTO: GetDataByBHIDDTO,
+    ): Promise<APIRes> {
         return this.statsService.getStatsByBHID(getDataByBHIDDTO);
     }
 }

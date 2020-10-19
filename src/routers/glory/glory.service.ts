@@ -30,10 +30,12 @@ export class GloryService {
         const gloryData = await this.gloryRepository.findOne({ brawlhalla_id });
         return gloryData;
     }
-    public async syncGlory({ brawlhalla_id }: GetDataByBHIDDTO): Promise<APIRes> {
+    public async syncGlory({
+        brawlhalla_id,
+    }: GetDataByBHIDDTO): Promise<APIRes> {
         const gloryData = await this.bhAPIService.getGloryByBHID(brawlhalla_id);
         const isExists = await this.isGloryExists(brawlhalla_id);
-        const data = { ...gloryData, lastSynced: Date.now() }
+        const data = { ...gloryData, lastSynced: Date.now() };
         if (isExists) {
             await this.gloryRepository.updateOne(
                 { brawlhalla_id },
@@ -49,12 +51,15 @@ export class GloryService {
             data: data,
         };
     }
-    public async getGloryByBHID({ brawlhalla_id }: GetDataByBHIDDTO): Promise<APIRes> {
+    public async getGloryByBHID({
+        brawlhalla_id,
+    }: GetDataByBHIDDTO): Promise<APIRes> {
         const gloryData = await this.getGloryData(brawlhalla_id);
         if (!gloryData) {
             return this.syncGlory({ brawlhalla_id });
         } else {
-            if (Date.now() - gloryData.lastSynced > 1000 * 60 * 5) return this.syncGlory({ brawlhalla_id });
+            if (Date.now() - gloryData.lastSynced > 1000 * 60 * 5)
+                return this.syncGlory({ brawlhalla_id });
             else {
                 delete gloryData._id;
                 return {

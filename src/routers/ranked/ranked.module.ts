@@ -9,6 +9,6 @@ import { RankedEntity } from "./ranked.entity";
     imports: [TypeOrmModule.forFeature([RankedEntity])],
     controllers: [RankedController],
     providers: [RankedService, BHAPIService],
-    exports: [TypeOrmModule, RankedService]
+    exports: [TypeOrmModule, RankedService],
 })
 export class RankedModule {}

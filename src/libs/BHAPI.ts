@@ -23,7 +23,6 @@ import xml from "xml2js";
 
 @Injectable()
 export class BHAPIService {
-    //#region utilities
     private async makeAPIRequest(
         path: string,
         queries?: UnknownObject,
@@ -92,7 +91,7 @@ export class BHAPIService {
             return Math.floor(1400 + (elo - 1400) / (3 - (3000 - elo) / 800));
         return elo;
     }
-    private async getSteamData(profileUrl: string): Promise<ISteamData> {
+    private async getSteamDataByURL(profileUrl: string): Promise<ISteamData> {
         const test = /(steamcommunity\.com\/(id|profiles)\/([^\s]+))/i;
         const match = test.exec(profileUrl);
         if (match) {
@@ -119,9 +118,9 @@ export class BHAPIService {
                 if (result.profile && result.profile.steamID64)
                     return {
                         name: result.profile.steamID[0],
-                        id: result.profile.steamID64[0],
-                        profile:
-                            "https://steamcommunity.com/profile/" +
+                        steam_id: result.profile.steamID64[0],
+                        steam_url:
+                            "https://steamcommunity.com/profiles/" +
                             result.profile.steamID64,
                     };
                 else
@@ -132,21 +131,47 @@ export class BHAPIService {
                 throw new BadRequestException("Not a valid Steam profile URL");
         } else throw new BadRequestException("Not a valid Steam profile URL");
     }
-    //#endregion
-    
-    //#region get bh id
+    private async getSteamDataByID(steamID: string): Promise<ISteamData> {
+        const res = await fetch(
+            "https://steamcommunity.com/profiles/" + steamID + "?xml=1",
+        )
+            .then(r => {
+                if (r.ok) return r.text();
+                else
+                    throw new BadRequestException(
+                        "Not a valid Steam profile ID",
+                    );
+            })
+            .catch(() => {
+                throw new BadRequestException("Not a valid Steam profile ID");
+            });
+        const result = await xml.parseStringPromise(res).catch(() => {
+            throw new BadRequestException("Not a valid Steam profile ID");
+        });
+        if (result.profile && result.profile.steamID64)
+            return {
+                name: result.profile.steamID[0],
+                steam_id: result.profile.steamID64[0],
+                steam_url:
+                    "https://steamcommunity.com/profiles/" +
+                    result.profile.steamID64,
+            };
+        else throw new BadRequestException("Not a valid Steam profile ID");
+    }
     private async getBHIDFromSteamID(
-        steamID: number,
+        steamID: string,
     ): Promise<BHIDFromSteamID> {
-        const res = (await this.makeAPIRequest(
-            `/search?steamid=${steamID}`,
-        )) as BHIDFromSteamID;
+        const res = (await this.makeAPIRequest("/search", {
+            steamid: steamID,
+        })) as BHIDFromSteamID;
         return res;
     }
     private async getBHIDFromSteamURL(steamURL: string): Promise<number> {
-        const steamData = await this.getSteamData(steamURL);
-        const { id } = await this.getBHIDFromSteamID(steamData.id);
-        return id;
+        const steamData = await this.getSteamDataByURL(steamURL);
+        const { brawlhalla_id } = await this.getBHIDFromSteamID(
+            steamData.steam_id,
+        );
+        return brawlhalla_id;
     }
     private async getBHIDFromName(name: string): Promise<number> {
         const playerArray = (await this.makeAPIRequest("/rankings/1v1/all/1", {
@@ -160,9 +185,6 @@ export class BHAPIService {
         if (res[0]) return res[0].brawlhalla_id;
         else throw new NotFoundException("Player not found");
     }
-    //#endregion
-
-    //#region stats and ranked
     public async getStatsByBHID(bhid: number): Promise<IPlayerStats> {
         const res = (await this.makeAPIRequest(
             `/player/${bhid}/stats`,
@@ -175,13 +197,13 @@ export class BHAPIService {
         )) as IPlayerRanked;
         return res;
     }
-    public async getRankedBySteamID(steamID: number): Promise<IPlayerRanked> {
+    public async getRankedBySteamID(steamID: string): Promise<IPlayerRanked> {
         const bhID = await this.getBHIDFromSteamID(steamID);
-        return this.getRankedByBHID(bhID.id);
+        return this.getRankedByBHID(bhID.brawlhalla_id);
     }
-    public async getStatsBySteamID(steamID: number): Promise<IPlayerStats> {
+    public async getStatsBySteamID(steamID: string): Promise<IPlayerStats> {
         const bhID = await this.getBHIDFromSteamID(steamID);
-        return this.getStatsByBHID(bhID.id);
+        return this.getStatsByBHID(bhID.brawlhalla_id);
     }
     public async getRankedBySteamURL(steamURL: string): Promise<IPlayerRanked> {
         const bhID = await this.getBHIDFromSteamURL(steamURL);
@@ -199,9 +221,6 @@ export class BHAPIService {
         const bhID = await this.getBHIDFromName(name);
         return this.getStatsByBHID(bhID);
     }
-    //#endregion
-
-    //#region others
     public async getClanByID(clanID: number): Promise<IClan> {
         const res = (await this.makeAPIRequest(`/clan/${clanID}`)) as IClan;
         return res;
@@ -238,9 +257,6 @@ export class BHAPIService {
         )) as IRanking1v1;
         return res;
     }
-    //#endregion
-
-    //#region legends
     public async getAllLegends(): Promise<IStaticAllLegends[]> {
         const res = (await this.makeAPIRequest(
             "/legend/all",
@@ -265,9 +281,6 @@ export class BHAPIService {
         )) as IStaticLegend;
         return res;
     }
-    //#endregion
-
-    //#region glory
     public async getGloryByBHID(bhid: number): Promise<IGloryData> {
         const rankedData = await this.getRankedByBHID(bhid);
         let { games, wins } = rankedData;
@@ -286,11 +299,17 @@ export class BHAPIService {
                       rating: this.gloryFromBestRating(bestElo),
                   };
         const eloReset = this.newEloFromOldElo(rankedData.rating);
-        return { brawlhalla_id: bhid, name: rankedData.name, bestElo, eloReset, glory };
+        return {
+            brawlhalla_id: bhid,
+            name: rankedData.name,
+            bestElo,
+            eloReset,
+            glory,
+        };
     }
-    public async getGloryBySteamID(steamid: number) {
+    public async getGloryBySteamID(steamid: string) {
         const bhdata = await this.getBHIDFromSteamID(steamid);
-        return this.getGloryByBHID(bhdata.id);
+        return this.getGloryByBHID(bhdata.brawlhalla_id);
     }
     public async getGloryBySteamURL(steamurl: string) {
         const bhid = await this.getBHIDFromSteamURL(steamurl);
@@ -300,5 +319,4 @@ export class BHAPIService {
         const bhid = await this.getBHIDFromName(name);
         return this.getGloryByBHID(bhid);
     }
-    //#endregion
 }
