@@ -39,7 +39,9 @@ export class GloryController {
         return this.gloryService.getGloryBySteamURL(getDataBySteamURLDTO);
     }
     @Get("name")
-    public async getGloryByName(getDataByNameDTO: GetDataByNameDTO): Promise<APIRes<GloryEntity>> {
+    public async getGloryByName(
+        getDataByNameDTO: GetDataByNameDTO,
+    ): Promise<APIRes<GloryEntity>> {
         return this.gloryService.getGloryByName(getDataByNameDTO);
     }
 }

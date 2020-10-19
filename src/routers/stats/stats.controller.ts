@@ -39,7 +39,9 @@ export class StatsController {
         return this.statsService.getStatsBySteamURL(getDataBySteamURLDTO);
     }
     @Get("name")
-    public async getStatsByName(getDataByNameDTO: GetDataByNameDTO): Promise<APIRes<StatsEntity>> {
+    public async getStatsByName(
+        getDataByNameDTO: GetDataByNameDTO,
+    ): Promise<APIRes<StatsEntity>> {
         return this.statsService.getStatsByName(getDataByNameDTO);
     }
 }

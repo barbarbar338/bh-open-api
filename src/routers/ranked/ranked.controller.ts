@@ -39,7 +39,9 @@ export class RankedController {
         return this.rankedService.getRankedBySteamURL(getDataBySteamURLDTO);
     }
     @Get("name")
-    public async getRankedByName(getDataByNameDTO: GetDataByNameDTO): Promise<APIRes<RankedEntity>> {
+    public async getRankedByName(
+        getDataByNameDTO: GetDataByNameDTO,
+    ): Promise<APIRes<RankedEntity>> {
         return this.rankedService.getRankedByName(getDataByNameDTO);
     }
 }
