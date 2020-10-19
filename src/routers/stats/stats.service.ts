@@ -8,6 +8,7 @@ import { StatsEntity } from "./stats.entity";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
+import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 
 @Injectable()
 export class StatsService {
@@ -89,5 +90,11 @@ export class StatsService {
             steam_url,
         });
         return this.getStatsByID({ brawlhalla_id: data.brawlhalla_id });
+    }
+    public async getStatsByName({
+        name,
+    }: GetDataByNameDTO): Promise<APIRes<StatsEntity>> {
+        const bhid = await this.bhAPIService.getBHIDFromName(name);
+        return this.getStatsByID({ brawlhalla_id: bhid });
     }
 }

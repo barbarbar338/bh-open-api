@@ -8,6 +8,7 @@ import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
+import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 
 @Injectable()
 export class RankedService {
@@ -96,5 +97,11 @@ export class RankedService {
             steam_url,
         });
         return this.getRankedByID({ brawlhalla_id: data.brawlhalla_id });
+    }
+    public async getRankedByName({
+        name,
+    }: GetDataByNameDTO): Promise<APIRes<RankedEntity>> {
+        const bhid = await this.bhAPIService.getBHIDFromName(name);
+        return this.getRankedByID({ brawlhalla_id: bhid });
     }
 }

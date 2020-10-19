@@ -8,6 +8,7 @@ import { GloryEntity } from "./glory.entity";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
+import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 
 @Injectable()
 export class GloryService {
@@ -89,5 +90,11 @@ export class GloryService {
             steam_url,
         });
         return this.getGloryByID({ brawlhalla_id: data.brawlhalla_id });
+    }
+    public async getGloryByName({
+        name,
+    }: GetDataByNameDTO): Promise<APIRes<GloryEntity>> {
+        const bhid = await this.bhAPIService.getBHIDFromName(name);
+        return this.getGloryByID({ brawlhalla_id: bhid });
     }
 }

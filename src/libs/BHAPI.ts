@@ -171,7 +171,7 @@ export class BHAPIService {
         );
         return brawlhalla_id;
     }
-    private async getBHIDFromName(name: string): Promise<number> {
+    public async getBHIDFromName(name: string): Promise<number> {
         const playerArray = (await this.makeAPIRequest("/rankings/1v1/all/1", {
             name,
         })) as IPlayerStats[];
