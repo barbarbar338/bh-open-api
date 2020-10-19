@@ -1,10 +1,12 @@
 import { Injectable, HttpStatus } from "@nestjs/common";
 import { APIRes } from "api-types";
 import { BHAPIService } from "src/libs/BHAPI";
+import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GloryEntity } from "./glory.entity";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
+import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 
 @Injectable()
 export class GloryService {
@@ -12,8 +14,9 @@ export class GloryService {
         @InjectRepository(GloryEntity)
         private readonly gloryRepository: MongoRepository<GloryEntity>,
         private readonly bhAPIService: BHAPIService,
+        private readonly steamDataService: SteamDataService,
     ) {}
-    public returnPing(): APIRes {
+    public returnPing(): APIRes<null> {
         return {
             statusCode: HttpStatus.OK,
             message: "Pong!",
@@ -32,10 +35,10 @@ export class GloryService {
     }
     public async syncGlory({
         brawlhalla_id,
-    }: GetDataByBHIDDTO): Promise<APIRes> {
+    }: GetDataByBHIDDTO): Promise<APIRes<GloryEntity>> {
         const gloryData = await this.bhAPIService.getGloryByBHID(brawlhalla_id);
         const isExists = await this.isGloryExists(brawlhalla_id);
-        const data = { ...gloryData, lastSynced: Date.now() };
+        const data = new GloryEntity({ ...gloryData, lastSynced: Date.now() });
         if (isExists) {
             await this.gloryRepository.updateOne(
                 { brawlhalla_id },
@@ -51,9 +54,9 @@ export class GloryService {
             data: data,
         };
     }
-    public async getGloryByBHID({
+    public async getGloryByID({
         brawlhalla_id,
-    }: GetDataByBHIDDTO): Promise<APIRes> {
+    }: GetDataByBHIDDTO): Promise<APIRes<GloryEntity>> {
         const gloryData = await this.getGloryData(brawlhalla_id);
         if (!gloryData) {
             return this.syncGlory({ brawlhalla_id });
@@ -69,5 +72,13 @@ export class GloryService {
                 };
             }
         }
+    }
+    public async getGloryBySteamID({
+        steam_id,
+    }: GetDataBySteamIDDTO): Promise<APIRes<GloryEntity>> {
+        const { data } = await this.steamDataService.getSteamDataByID({
+            steam_id,
+        });
+        return this.getGloryByID({ brawlhalla_id: data.brawlhalla_id });
     }
 }

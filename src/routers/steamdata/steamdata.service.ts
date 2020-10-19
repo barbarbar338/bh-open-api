@@ -14,7 +14,7 @@ export class SteamDataService {
         private readonly steamdataRepository: MongoRepository<SteamDataEntity>,
         private readonly bhAPIService: BHAPIService,
     ) {}
-    public returnPing(): APIRes {
+    public returnPing(): APIRes<null> {
         return {
             statusCode: HttpStatus.OK,
             message: "Pong!",
@@ -35,17 +35,17 @@ export class SteamDataService {
     }
     public async syncSteamData({
         steam_id,
-    }: GetDataBySteamIDDTO): Promise<APIRes> {
+    }: GetDataBySteamIDDTO): Promise<APIRes<SteamDataEntity>> {
         const statsData = await this.bhAPIService.getSteamDataByID(steam_id);
         const isExists = await this.isSteamDataExists(steam_id);
         const bhData = await this.bhAPIService.getBHIDFromSteamID(
             statsData.steam_id,
         );
-        const data = {
+        const data = new SteamDataEntity({
             steam_id: statsData.steam_id,
             steam_url: statsData.steam_url,
             brawlhalla_id: bhData.brawlhalla_id,
-        };
+        });
         if (isExists) {
             await this.steamdataRepository.updateOne(
                 { steam_id },
@@ -63,7 +63,7 @@ export class SteamDataService {
     }
     public async getSteamDataByID({
         steam_id,
-    }: GetDataBySteamIDDTO): Promise<APIRes> {
+    }: GetDataBySteamIDDTO): Promise<APIRes<SteamDataEntity>> {
         const steamData = await this.getSteamData(steam_id);
         if (!steamData) {
             return this.syncSteamData({ steam_id });
@@ -78,7 +78,7 @@ export class SteamDataService {
     }
     public async getSteamDataByURL({
         steam_url,
-    }: GetDataBySteamURLDTO): Promise<APIRes> {
+    }: GetDataBySteamURLDTO): Promise<APIRes<SteamDataEntity>> {
         const { steam_id } = await this.bhAPIService.getSteamDataByURL(
             steam_url,
         );

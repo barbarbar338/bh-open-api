@@ -6,7 +6,7 @@ import { APIRes } from "api-types";
 export class PingController {
     constructor(private readonly pingService: PingService) {}
     @Get()
-    public returnPing(): APIRes {
+    public returnPing(): APIRes<null> {
         return this.pingService.returnPing();
     }
 }

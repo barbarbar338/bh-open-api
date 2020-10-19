@@ -1,8 +1,8 @@
 declare module "api-types" {
-    export interface APIRes {
+    export interface APIRes<T> {
         statusCode: number;
         message: string | string[];
-        data: unknown;
+        data: T;
         error?: string | string[];
     }
     export interface UnknownObject {

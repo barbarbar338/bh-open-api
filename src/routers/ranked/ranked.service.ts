@@ -5,6 +5,8 @@ import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RankedEntity } from "./ranked.entity";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
+import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
+import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 
 @Injectable()
 export class RankedService {
@@ -12,8 +14,9 @@ export class RankedService {
         @InjectRepository(RankedEntity)
         private readonly rankedRepository: MongoRepository<RankedEntity>,
         private readonly bhAPIService: BHAPIService,
+        private readonly steamDataService: SteamDataService,
     ) {}
-    public returnPing(): APIRes {
+    public returnPing(): APIRes<null> {
         return {
             statusCode: HttpStatus.OK,
             message: "Pong!",
@@ -34,12 +37,15 @@ export class RankedService {
     }
     public async syncRanked({
         brawlhalla_id,
-    }: GetDataByBHIDDTO): Promise<APIRes> {
+    }: GetDataByBHIDDTO): Promise<APIRes<RankedEntity>> {
         const rankedData = await this.bhAPIService.getRankedByBHID(
             brawlhalla_id,
         );
         const isExists = await this.isRankedExists(brawlhalla_id);
-        const data = { ...rankedData, lastSynced: Date.now() };
+        const data = new RankedEntity({
+            ...rankedData,
+            lastSynced: Date.now(),
+        });
         if (isExists) {
             await this.rankedRepository.updateOne(
                 { brawlhalla_id },
@@ -55,9 +61,9 @@ export class RankedService {
             data: data,
         };
     }
-    public async getRankedByBHID({
+    public async getRankedByID({
         brawlhalla_id,
-    }: GetDataByBHIDDTO): Promise<APIRes> {
+    }: GetDataByBHIDDTO): Promise<APIRes<RankedEntity>> {
         const rankedData = await this.getRankedData(brawlhalla_id);
         if (!rankedData) {
             return this.syncRanked({ brawlhalla_id });
@@ -73,5 +79,13 @@ export class RankedService {
                 };
             }
         }
+    }
+    public async getRankedBySteamID({
+        steam_id,
+    }: GetDataBySteamIDDTO): Promise<APIRes<RankedEntity>> {
+        const { data } = await this.steamDataService.getSteamDataByID({
+            steam_id,
+        });
+        return this.getRankedByID({ brawlhalla_id: data.brawlhalla_id });
     }
 }

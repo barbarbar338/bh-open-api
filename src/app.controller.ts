@@ -4,7 +4,7 @@ import { APIRes } from "api-types";
 @Controller()
 export class AppController {
     @Get()
-    returnPing(): APIRes {
+    returnPing(): APIRes<null> {
         return {
             statusCode: HttpStatus.OK,
             message: "Pong!",

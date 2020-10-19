@@ -18,7 +18,7 @@ export class HealthController {
         private readonly healthService: HealthService,
     ) {}
     @Get("ping")
-    public returnPing(): APIRes {
+    public returnPing(): APIRes<null> {
         return this.healthService.returnPing();
     }
     @Get()

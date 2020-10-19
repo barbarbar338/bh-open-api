@@ -1,10 +1,12 @@
 import { Injectable, HttpStatus } from "@nestjs/common";
 import { APIRes } from "api-types";
 import { BHAPIService } from "src/libs/BHAPI";
+import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { MongoRepository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { StatsEntity } from "./stats.entity";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
+import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 
 @Injectable()
 export class StatsService {
@@ -12,8 +14,9 @@ export class StatsService {
         @InjectRepository(StatsEntity)
         private readonly statsRepository: MongoRepository<StatsEntity>,
         private readonly bhAPIService: BHAPIService,
+        private readonly steamDataService: SteamDataService,
     ) {}
-    public returnPing(): APIRes {
+    public returnPing(): APIRes<null> {
         return {
             statusCode: HttpStatus.OK,
             message: "Pong!",
@@ -32,10 +35,10 @@ export class StatsService {
     }
     public async syncStats({
         brawlhalla_id,
-    }: GetDataByBHIDDTO): Promise<APIRes> {
+    }: GetDataByBHIDDTO): Promise<APIRes<StatsEntity>> {
         const statsData = await this.bhAPIService.getStatsByBHID(brawlhalla_id);
         const isExists = await this.isStatsExists(brawlhalla_id);
-        const data = { ...statsData, lastSynced: Date.now() };
+        const data = new StatsEntity({ ...statsData, lastSynced: Date.now() });
         if (isExists) {
             await this.statsRepository.updateOne(
                 { brawlhalla_id },
@@ -51,9 +54,9 @@ export class StatsService {
             data: data,
         };
     }
-    public async getStatsByBHID({
+    public async getStatsByID({
         brawlhalla_id,
-    }: GetDataByBHIDDTO): Promise<APIRes> {
+    }: GetDataByBHIDDTO): Promise<APIRes<StatsEntity>> {
         const statsData = await this.getStatsData(brawlhalla_id);
         if (!statsData) {
             return this.syncStats({ brawlhalla_id });
@@ -69,5 +72,13 @@ export class StatsService {
                 };
             }
         }
+    }
+    public async getStatsBySteamID({
+        steam_id,
+    }: GetDataBySteamIDDTO): Promise<APIRes<StatsEntity>> {
+        const { data } = await this.steamDataService.getSteamDataByID({
+            steam_id,
+        });
+        return this.getStatsByID({ brawlhalla_id: data.brawlhalla_id });
     }
 }

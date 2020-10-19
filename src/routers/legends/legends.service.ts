@@ -14,7 +14,7 @@ export class LegendsService {
         private readonly legendsRepository: MongoRepository<LegendsEntity>,
         private readonly bhAPIService: BHAPIService,
     ) {}
-    public returnPing(): APIRes {
+    public returnPing(): APIRes<null> {
         return {
             statusCode: HttpStatus.OK,
             message: "Pong!",
@@ -31,8 +31,8 @@ export class LegendsService {
         const legendData = await this.legendsRepository.findOne({ legend_id });
         return legendData;
     }
-    public async syncLegend({ legend_id }: GetLegendByIDDTO): Promise<APIRes> {
-        const legendData = await this.bhAPIService.getLegendByID(legend_id);
+    public async syncLegend({ legend_id }: GetLegendByIDDTO): Promise<APIRes<LegendsEntity>> {
+        const legendData = new LegendsEntity({ ...await this.bhAPIService.getLegendByID(legend_id) });
         const isExists = await this.isExists(legend_id);
         if (isExists) {
             await this.legendsRepository.updateOne(
@@ -51,7 +51,7 @@ export class LegendsService {
     }
     public async getLegendByID({
         legend_id,
-    }: GetLegendByIDDTO): Promise<APIRes> {
+    }: GetLegendByIDDTO): Promise<APIRes<LegendsEntity>> {
         const legendData = await this.getLegendData(legend_id);
         if (!legendData) {
             return this.syncLegend({ legend_id });
@@ -66,7 +66,7 @@ export class LegendsService {
     }
     public async getLegendByName({
         legend_name,
-    }: GetLegendByNameDTO): Promise<APIRes> {
+    }: GetLegendByNameDTO): Promise<APIRes<LegendsEntity>> {
         const legendData = await this.legendsRepository.findOne({
             legend_name_key: legend_name,
         });
@@ -78,9 +78,9 @@ export class LegendsService {
                 data: legendData,
             };
         } else {
-            const newData = await this.bhAPIService.getLegendByName(
+            const newData = new LegendsEntity({ ...await this.bhAPIService.getLegendByName(
                 legend_name,
-            );
+            )} );
             const repository = this.legendsRepository.create(newData);
             await this.legendsRepository.save(repository);
             return {
@@ -90,7 +90,7 @@ export class LegendsService {
             };
         }
     }
-    public async getAllLegends(): Promise<APIRes> {
+    public async getAllLegends(): Promise<APIRes<LegendsEntity[]>> {
         const allLegends = (await this.legendsRepository.find()).map(
             legendData => {
                 delete legendData._id;
