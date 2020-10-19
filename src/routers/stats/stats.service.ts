@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { StatsEntity } from "./stats.entity";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
+import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 
 @Injectable()
 export class StatsService {
@@ -78,6 +79,14 @@ export class StatsService {
     }: GetDataBySteamIDDTO): Promise<APIRes<StatsEntity>> {
         const { data } = await this.steamDataService.getSteamDataByID({
             steam_id,
+        });
+        return this.getStatsByID({ brawlhalla_id: data.brawlhalla_id });
+    }
+    public async getStatsBySteamURL({
+        steam_url,
+    }: GetDataBySteamURLDTO): Promise<APIRes<StatsEntity>> {
+        const { data } = await this.steamDataService.getSteamDataByURL({
+            steam_url,
         });
         return this.getStatsByID({ brawlhalla_id: data.brawlhalla_id });
     }

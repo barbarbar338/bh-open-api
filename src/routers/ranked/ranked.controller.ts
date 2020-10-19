@@ -4,6 +4,7 @@ import { APIRes } from "api-types";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { RankedEntity } from "./ranked.entity";
+import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 
 @Controller("ranked")
 export class RankedController {
@@ -25,9 +26,15 @@ export class RankedController {
         return this.rankedService.getRankedByID(getDataByBHIDDTO);
     }
     @Get("steamid")
-    public async getStatsBySteamID(
+    public async getRankedBySteamID(
         @Query() getDataBySteamIDDTO: GetDataBySteamIDDTO,
     ): Promise<APIRes<RankedEntity>> {
         return this.rankedService.getRankedBySteamID(getDataBySteamIDDTO);
+    }
+    @Get("steamurl")
+    public async getStatsBySteamURL(
+        @Query() getDataBySteamURLDTO: GetDataBySteamURLDTO,
+    ): Promise<APIRes<RankedEntity>> {
+        return this.rankedService.getRankedBySteamURL(getDataBySteamURLDTO);
     }
 }

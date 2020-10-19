@@ -31,8 +31,12 @@ export class LegendsService {
         const legendData = await this.legendsRepository.findOne({ legend_id });
         return legendData;
     }
-    public async syncLegend({ legend_id }: GetLegendByIDDTO): Promise<APIRes<LegendsEntity>> {
-        const legendData = new LegendsEntity({ ...await this.bhAPIService.getLegendByID(legend_id) });
+    public async syncLegend({
+        legend_id,
+    }: GetLegendByIDDTO): Promise<APIRes<LegendsEntity>> {
+        const legendData = new LegendsEntity({
+            ...(await this.bhAPIService.getLegendByID(legend_id)),
+        });
         const isExists = await this.isExists(legend_id);
         if (isExists) {
             await this.legendsRepository.updateOne(
@@ -78,9 +82,9 @@ export class LegendsService {
                 data: legendData,
             };
         } else {
-            const newData = new LegendsEntity({ ...await this.bhAPIService.getLegendByName(
-                legend_name,
-            )} );
+            const newData = new LegendsEntity({
+                ...(await this.bhAPIService.getLegendByName(legend_name)),
+            });
             const repository = this.legendsRepository.create(newData);
             await this.legendsRepository.save(repository);
             return {

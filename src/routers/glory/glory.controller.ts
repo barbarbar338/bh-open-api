@@ -4,6 +4,7 @@ import { APIRes } from "api-types";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GloryEntity } from "./glory.entity";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
+import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 
 @Controller("glory")
 export class GloryController {
@@ -25,9 +26,15 @@ export class GloryController {
         return this.gloryService.getGloryByID(getDataByBHIDDTO);
     }
     @Get("steamid")
-    public async getStatsBySteamID(
+    public async getGloryBySteamID(
         @Query() getDataBySteamIDDTO: GetDataBySteamIDDTO,
     ): Promise<APIRes<GloryEntity>> {
         return this.gloryService.getGloryBySteamID(getDataBySteamIDDTO);
+    }
+    @Get("steamurl")
+    public async getGloryBySteamURL(
+        @Query() getDataBySteamURLDTO: GetDataBySteamURLDTO,
+    ): Promise<APIRes<GloryEntity>> {
+        return this.gloryService.getGloryBySteamURL(getDataBySteamURLDTO);
     }
 }
