@@ -1,7 +1,7 @@
 import { Transform } from "class-transformer";
 import { IsDefined, IsNumber } from "class-validator";
 
-export class SyncDataDTO {
+export class GetDataByBHIDDTO {
     @IsDefined()
     @Transform(i => parseInt(i))
     @IsNumber()

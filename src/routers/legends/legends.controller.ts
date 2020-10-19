@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param } from "@nestjs/common";
+import { Controller, Get, Query } from "@nestjs/common";
 import { LegendsService } from "./legends.service";
 import { APIRes } from "api-types";
 import { SyncLegendDTO } from "./dto/syncLegend.dto";
@@ -16,15 +16,15 @@ export class LegendsController {
     public async getAllLegends(): Promise<APIRes> {
         return this.legendsService.getAllLegends();
     }
-    @Get("id/:legend_id")
+    @Get("id")
     public async getLegendByID(
-        @Param() getLegendByIDDTO: GetLegendByIDDTO,
+        @Query() getLegendByIDDTO: GetLegendByIDDTO,
     ): Promise<APIRes> {
         return this.legendsService.getLegendByID(getLegendByIDDTO);
     }
-    @Get("name/:legend_name")
+    @Get("name")
     public async getLegendByName(
-        @Param() getLegendByNameDTO: GetLegendByNameDTO,
+        @Query() getLegendByNameDTO: GetLegendByNameDTO,
     ): Promise<APIRes> {
         return this.legendsService.getLegendByName(getLegendByNameDTO);
     }

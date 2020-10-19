@@ -6,7 +6,9 @@ import { RateLimiterModule, RateLimiterGuard } from "nestjs-rate-limit";
 import { HealthModule } from "./routers/health/health.module";
 import { PingModule } from "./routers/ping/ping.module";
 import { LegendsModule } from "./routers/legends/legends.module";
-import { PlayersModule } from "./routers/players/players.module";
+import { StatsModule } from "./routers/stats/stats.module";
+import { RankedModule } from "./routers/ranked/ranked.module";
+import { GloryModule } from "./routers/glory/glory.module";
 import CONFIG from "./config";
 
 @Module({
@@ -29,7 +31,9 @@ import CONFIG from "./config";
         HealthModule,
         PingModule,
         LegendsModule,
-        PlayersModule,
+        StatsModule,
+        RankedModule,
+        GloryModule,
     ],
     controllers: [AppController],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
