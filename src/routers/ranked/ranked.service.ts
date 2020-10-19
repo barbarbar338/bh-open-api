@@ -9,6 +9,7 @@ import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
+import CONFIG from "src/config";
 
 @Injectable()
 export class RankedService {
@@ -70,7 +71,7 @@ export class RankedService {
         if (!rankedData) {
             return this.syncRanked({ brawlhalla_id });
         } else {
-            if (Date.now() - rankedData.lastSynced > 1000 * 60 * 10)
+            if (Date.now() - rankedData.lastSynced > CONFIG.SYNC_PERIOD)
                 return this.syncRanked({ brawlhalla_id });
             else {
                 delete rankedData._id;

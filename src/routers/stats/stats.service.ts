@@ -9,6 +9,7 @@ import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
+import CONFIG from "src/config";
 
 @Injectable()
 export class StatsService {
@@ -63,7 +64,7 @@ export class StatsService {
         if (!statsData) {
             return this.syncStats({ brawlhalla_id });
         } else {
-            if (Date.now() - statsData.lastSynced > 1000 * 60 * 10)
+            if (Date.now() - statsData.lastSynced > CONFIG.SYNC_PERIOD)
                 return this.syncStats({ brawlhalla_id });
             else {
                 delete statsData._id;

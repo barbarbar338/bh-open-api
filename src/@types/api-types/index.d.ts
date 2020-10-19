@@ -27,11 +27,9 @@ declare module "api-types" {
             rating: number;
         };
     }
-
     export interface IRankingsOptions {
         region: RankedRegion;
         page: string | number;
-        name: string;
     }
     export interface IPlayerStats {
         brawlhalla_id: number;

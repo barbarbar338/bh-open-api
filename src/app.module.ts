@@ -10,6 +10,7 @@ import { StatsModule } from "./routers/stats/stats.module";
 import { RankedModule } from "./routers/ranked/ranked.module";
 import { GloryModule } from "./routers/glory/glory.module";
 import { SteamDataModule } from "./routers/steamdata/steamdata.module";
+import { UtilsModule } from "./routers/utils/utils.module";
 import CONFIG from "./config";
 
 @Module({
@@ -36,6 +37,7 @@ import CONFIG from "./config";
         RankedModule,
         GloryModule,
         SteamDataModule,
+        UtilsModule,
     ],
     controllers: [AppController],
     providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],

@@ -7,5 +7,5 @@ export default {
     BH_API_KEY: process.env.BH_API_KEY as string,
     PORT: (process.env.PORT as unknown) as number,
     MONGODB_URI: process.env.MONGODB_URI as string,
-    SECRET: process.env.SECRET as string,
+    SYNC_PERIOD: 1000 * 60 * 15
 };

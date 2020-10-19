@@ -40,7 +40,7 @@ export class GloryController {
     }
     @Get("name")
     public async getGloryByName(
-        getDataByNameDTO: GetDataByNameDTO,
+        @Query() getDataByNameDTO: GetDataByNameDTO,
     ): Promise<APIRes<GloryEntity>> {
         return this.gloryService.getGloryByName(getDataByNameDTO);
     }

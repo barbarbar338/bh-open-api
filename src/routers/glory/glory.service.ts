@@ -9,6 +9,7 @@ import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
+import CONFIG from "src/config";
 
 @Injectable()
 export class GloryService {
@@ -63,7 +64,7 @@ export class GloryService {
         if (!gloryData) {
             return this.syncGlory({ brawlhalla_id });
         } else {
-            if (Date.now() - gloryData.lastSynced > 1000 * 60 * 10)
+            if (Date.now() - gloryData.lastSynced > CONFIG.SYNC_PERIOD)
                 return this.syncGlory({ brawlhalla_id });
             else {
                 delete gloryData._id;

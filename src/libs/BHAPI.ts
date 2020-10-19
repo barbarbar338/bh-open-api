@@ -16,6 +16,7 @@ import {
     IStaticAllLegends,
     IStaticLegend,
     IGloryData,
+    IRanking2v2,
 } from "api-types";
 import fetch from "node-fetch";
 import CONFIG from "src/config";
@@ -219,6 +220,7 @@ export class BHAPIService {
         const bhID = await this.getBHIDFromName(name);
         return this.getStatsByBHID(bhID);
     }
+
     public async getClanByID(clanID: number): Promise<IClan> {
         const res = (await this.makeAPIRequest(`/clan/${clanID}`)) as IClan;
         return res;
@@ -226,35 +228,22 @@ export class BHAPIService {
     public async get1v1Rankings({
         region,
         page,
-        name,
-    }: IRankingsOptions): Promise<IRanking1v1> {
+    }: IRankingsOptions): Promise<IRanking1v1[]> {
         const res = (await this.makeAPIRequest(
             `/rankings/1v1/${region.toLocaleLowerCase()}/${page}`,
-            { name },
-        )) as IRanking1v1;
+        )) as IRanking1v1[];
         return res;
     }
     public async get2v2Rankings({
         region,
         page,
-    }: IRankingsOptions): Promise<IRanking1v1> {
+    }: IRankingsOptions): Promise<IRanking2v2[]> {
         const res = (await this.makeAPIRequest(
             `/rankings/2v2/${region.toLocaleLowerCase()}/${page}`,
-        )) as IRanking1v1;
+        )) as IRanking2v2[];
         return res;
     }
-    public async get1v1PowerRankings(): Promise<IRanking1v1> {
-        const res = (await this.makeAPIRequest(
-            "/rankings/power",
-        )) as IRanking1v1;
-        return res;
-    }
-    public async get2v2PowerRankings(): Promise<IRanking1v1> {
-        const res = (await this.makeAPIRequest(
-            "/rankings/power",
-        )) as IRanking1v1;
-        return res;
-    }
+
     public async getAllLegends(): Promise<IStaticAllLegends[]> {
         const res = (await this.makeAPIRequest(
             "/legend/all",

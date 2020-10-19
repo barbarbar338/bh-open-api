@@ -40,8 +40,9 @@ export class StatsController {
     }
     @Get("name")
     public async getStatsByName(
-        getDataByNameDTO: GetDataByNameDTO,
+        @Query() getDataByNameDTO: GetDataByNameDTO,
     ): Promise<APIRes<StatsEntity>> {
+        console.log(getDataByNameDTO);
         return this.statsService.getStatsByName(getDataByNameDTO);
     }
 }
