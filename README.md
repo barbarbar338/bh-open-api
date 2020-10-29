@@ -1,4 +1,4 @@
-# 🔥 Brawlhalla Open API (Client)
+# 🔥 Brawlhalla Open API (Server)
 - An unofficial API server with no connection to Brawlhalla and its developers, prepared for easier and unlimited access to Brawlhalla API services. ✅
 - It is not designed to defame Brawlhalla and its developers. ❎
 - See Client-Side project [here](https://github.com/barbarbar338/bh-open-api-webpage/)! 🖥️
