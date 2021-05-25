@@ -10,4 +10,4 @@
 - Feel free to use GitHub's features ✨
 
 # 📚 Docs
-- See [https://brawlhalla.bariscodes.me/](https://brawlhalla.bariscodes.me/)
+- See https://brawlhalla.vercel.app/
