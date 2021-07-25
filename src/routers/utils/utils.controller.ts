@@ -50,6 +50,25 @@ export class UtilsController {
 		return this.utilsService.syncRanked2v2Data(getDataByRankingOptionsDTO);
 	}
 
+	@Get("rankedseasonal")
+	public async getRankedSeasonalDataByRankingOptions(
+		@Query() getDataByRankingOptionsDTO: GetDataByRankingOptionsDTO,
+	): Promise<APIRes<unknown>> {
+		return this.utilsService.getRankedSeasonalDataByRankingOptions(
+			getDataByRankingOptionsDTO,
+		);
+	}
+
+	@Get("rankedseasonal/sync")
+	@RateLimit(CONFIG.SYNC_RATELIMIT)
+	public async syncRankedSeasonalDataByRankingOptions(
+		@Query() getDataByRankingOptionsDTO: GetDataByRankingOptionsDTO,
+	): Promise<APIRes<unknown>> {
+		return this.utilsService.syncRankedSeasonalData(
+			getDataByRankingOptionsDTO,
+		);
+	}
+
 	@Get("clan")
 	public async getDataByClanIDDTO(
 		@Query() getDataByClanIDDTO: GetDataByClanIDDTO,

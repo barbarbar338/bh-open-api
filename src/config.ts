@@ -13,4 +13,5 @@ export default {
 		points: 1,
 		duration: 60 * 2,
 	},
+	SEASONAL_RANKED: "brawlball",
 };

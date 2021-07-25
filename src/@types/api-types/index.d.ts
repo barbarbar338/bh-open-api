@@ -178,6 +178,11 @@ declare module "api-types" {
 		twitch_name_two?: string;
 	}
 
+	export interface IRankingSeasonal extends IRanking {
+		name: string;
+		brawlhalla_id: number;
+	}
+
 	export interface IStaticAllLegends {
 		legend_id: number;
 		legend_name_key: string;

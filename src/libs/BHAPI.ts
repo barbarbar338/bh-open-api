@@ -17,6 +17,7 @@ import {
 	IStaticLegend,
 	IGloryData,
 	IRanking2v2,
+	IRankingSeasonal,
 } from "api-types";
 import fetch from "node-fetch";
 import CONFIG from "src/config";
@@ -299,6 +300,19 @@ export class BHAPIService {
 		const res = (await this.makeAPIRequest(
 			`/rankings/2v2/${region.toLocaleLowerCase()}/${page}`,
 		)) as IRanking2v2[];
+
+		return res;
+	}
+
+	public async getSeasonalRankings({
+		region,
+		page,
+	}: IRankingsOptions): Promise<IRankingSeasonal[]> {
+		const res = (await this.makeAPIRequest(
+			`/rankings/${
+				CONFIG.SEASONAL_RANKED
+			}/${region.toLocaleLowerCase()}/${page}`,
+		)) as IRankingSeasonal[];
 
 		return res;
 	}

@@ -1,6 +1,12 @@
 import { Injectable, HttpStatus } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { APIRes, IRanking1v1, IRanking2v2, RankedRegion } from "api-types";
+import {
+	APIRes,
+	IRanking1v1,
+	IRanking2v2,
+	IRankingSeasonal,
+	RankedRegion,
+} from "api-types";
 import { MongoRepository } from "typeorm";
 import { Ranked1v1Entity } from "./1v1.entity";
 import { Ranked2v2Entity } from "./2v2.entity";
@@ -9,6 +15,7 @@ import { GetDataByRankingOptionsDTO } from "src/dto/getDataByRankingOptions.dto"
 import { BHAPIService } from "src/libs/BHAPI";
 import { GetDataByClanIDDTO } from "src/dto/getDataByClanID.dto";
 import CONFIG from "src/config";
+import { RankedSeasonalEntity } from "./seasonal.entity";
 
 @Injectable()
 export class UtilsService {
@@ -19,6 +26,10 @@ export class UtilsService {
 		private readonly ranked2v2Repository: MongoRepository<Ranked2v2Entity>,
 		@InjectRepository(ClanEntity)
 		private readonly clanRepository: MongoRepository<ClanEntity>,
+		@InjectRepository(RankedSeasonalEntity)
+		private readonly rankedSeasonalRepository: MongoRepository<
+			RankedSeasonalEntity
+		>,
 		private readonly bhAPIService: BHAPIService,
 	) {}
 
@@ -111,12 +122,12 @@ export class UtilsService {
 		region: RankedRegion,
 		page: string | number,
 	): Promise<boolean> {
-		const ranked1v1Data = await this.ranked2v2Repository.findOne({
+		const ranked2v2Data = await this.ranked2v2Repository.findOne({
 			region,
 			page,
 		});
 
-		return !!ranked1v1Data;
+		return !!ranked2v2Data;
 	}
 
 	private async getRanked2v2Data(
@@ -179,6 +190,87 @@ export class UtilsService {
 					statusCode: HttpStatus.OK,
 					message: `${ranked2v2Data.region} ${ranked2v2Data.page} from database`,
 					data: ranked2v2Data.data,
+				};
+			}
+		}
+	}
+
+	private async isRankedSeasonalDataExists(
+		region: RankedRegion,
+		page: string | number,
+	): Promise<boolean> {
+		const rankedSeasonalData = await this.rankedSeasonalRepository.findOne({
+			region,
+			page,
+		});
+
+		return !!rankedSeasonalData;
+	}
+
+	private async getRankedSeasonalData(
+		region: RankedRegion,
+		page: string | number,
+	): Promise<RankedSeasonalEntity> {
+		const rankedSeasonalData = await this.rankedSeasonalRepository.findOne({
+			region,
+			page,
+		});
+
+		return rankedSeasonalData;
+	}
+
+	public async syncRankedSeasonalData({
+		region,
+		page,
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRankingSeasonal[]>> {
+		const rankedSeasonalData = await this.bhAPIService.getSeasonalRankings({
+			region,
+			page,
+		});
+		const isExists = await this.isRankedSeasonalDataExists(region, page);
+		const data = new RankedSeasonalEntity({
+			region,
+			page,
+			data: rankedSeasonalData,
+			lastSynced: Date.now(),
+		});
+
+		if (isExists) {
+			await this.rankedSeasonalRepository.updateOne(
+				{ region, page },
+				{ $set: data },
+			);
+		} else {
+			const repository = this.rankedSeasonalRepository.create(data);
+			await this.rankedSeasonalRepository.save(repository);
+		}
+
+		return {
+			statusCode: HttpStatus.OK,
+			message: `${data.region} ${data.page} synced`,
+			data: data.data,
+		};
+	}
+
+	public async getRankedSeasonalDataByRankingOptions({
+		region,
+		page,
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRankingSeasonal[]>> {
+		const rankedSeasonalData = await this.getRankedSeasonalData(
+			region,
+			page,
+		);
+
+		if (!rankedSeasonalData)
+			return this.syncRankedSeasonalData({ region, page });
+		else {
+			if (Date.now() - rankedSeasonalData.lastSynced > CONFIG.SYNC_PERIOD)
+				return this.syncRankedSeasonalData({ region, page });
+			else {
+				return {
+					statusCode: HttpStatus.OK,
+					message: `${rankedSeasonalData.region} ${rankedSeasonalData.page} from database`,
+					data: rankedSeasonalData.data,
 				};
 			}
 		}

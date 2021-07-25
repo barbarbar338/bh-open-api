@@ -6,6 +6,7 @@ import { Ranked2v2Entity } from "./2v2.entity";
 import { Ranked1v1Entity } from "./1v1.entity";
 import { ClanEntity } from "./clan.entity";
 import { BHAPIService } from "src/libs/BHAPI";
+import { RankedSeasonalEntity } from "./seasonal.entity";
 
 @Module({
 	imports: [
@@ -13,6 +14,7 @@ import { BHAPIService } from "src/libs/BHAPI";
 			Ranked2v2Entity,
 			Ranked1v1Entity,
 			ClanEntity,
+			RankedSeasonalEntity,
 		]),
 	],
 	controllers: [UtilsController],
