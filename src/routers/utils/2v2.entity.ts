@@ -3,22 +3,22 @@ import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
 
 @Entity({ name: "Ranked2v2Entity" })
 export class Ranked2v2Entity {
-    @ObjectIdColumn()
-    _id: ObjectID;
+	@ObjectIdColumn()
+	_id: ObjectID;
 
-    @Column({ nullable: false })
-    page: number | string;
+	@Column({ nullable: false })
+	page: number | string;
 
-    @Column({ nullable: false })
-    region: RankedRegion;
+	@Column({ nullable: false })
+	region: RankedRegion;
 
-    @Column({ nullable: false })
-    data: IRanking2v2[];
+	@Column({ nullable: false })
+	data: IRanking2v2[];
 
-    @Column({ nullable: false })
-    lastSynced: number;
+	@Column({ nullable: false })
+	lastSynced: number;
 
-    constructor(partial: Partial<Ranked2v2Entity>) {
-        Object.assign(this, partial);
-    }
+	constructor(partial: Partial<Ranked2v2Entity>) {
+		Object.assign(this, partial);
+	}
 }

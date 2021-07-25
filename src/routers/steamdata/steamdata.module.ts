@@ -6,9 +6,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { SteamDataEntity } from "./steamdata.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([SteamDataEntity])],
-    controllers: [SteamDataController],
-    providers: [SteamDataService, BHAPIService],
-    exports: [TypeOrmModule, SteamDataService],
+	imports: [TypeOrmModule.forFeature([SteamDataEntity])],
+	controllers: [SteamDataController],
+	providers: [SteamDataService, BHAPIService],
+	exports: [TypeOrmModule, SteamDataService],
 })
 export class SteamDataModule {}

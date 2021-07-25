@@ -8,9 +8,9 @@ import { RankedEntity } from "./ranked.entity";
 import { SteamDataEntity } from "src/routers/steamdata/steamdata.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([RankedEntity, SteamDataEntity])],
-    controllers: [RankedController],
-    providers: [RankedService, BHAPIService, SteamDataService],
-    exports: [TypeOrmModule, RankedService],
+	imports: [TypeOrmModule.forFeature([RankedEntity, SteamDataEntity])],
+	controllers: [RankedController],
+	providers: [RankedService, BHAPIService, SteamDataService],
+	exports: [TypeOrmModule, RankedService],
 })
 export class RankedModule {}

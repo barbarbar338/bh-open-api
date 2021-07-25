@@ -8,9 +8,9 @@ import { StatsEntity } from "./stats.entity";
 import { SteamDataEntity } from "src/routers/steamdata/steamdata.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([StatsEntity, SteamDataEntity])],
-    controllers: [StatsController],
-    providers: [StatsService, BHAPIService, SteamDataService],
-    exports: [TypeOrmModule, StatsService],
+	imports: [TypeOrmModule.forFeature([StatsEntity, SteamDataEntity])],
+	controllers: [StatsController],
+	providers: [StatsService, BHAPIService, SteamDataService],
+	exports: [TypeOrmModule, StatsService],
 })
 export class StatsModule {}

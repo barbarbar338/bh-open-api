@@ -8,15 +8,15 @@ import { ClanEntity } from "./clan.entity";
 import { BHAPIService } from "src/libs/BHAPI";
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            Ranked2v2Entity,
-            Ranked1v1Entity,
-            ClanEntity,
-        ]),
-    ],
-    controllers: [UtilsController],
-    providers: [UtilsService, BHAPIService],
-    exports: [TypeOrmModule, UtilsService],
+	imports: [
+		TypeOrmModule.forFeature([
+			Ranked2v2Entity,
+			Ranked1v1Entity,
+			ClanEntity,
+		]),
+	],
+	controllers: [UtilsController],
+	providers: [UtilsService, BHAPIService],
+	exports: [TypeOrmModule, UtilsService],
 })
 export class UtilsModule {}
