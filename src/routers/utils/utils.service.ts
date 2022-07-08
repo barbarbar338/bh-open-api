@@ -27,9 +27,7 @@ export class UtilsService {
 		@InjectRepository(ClanEntity)
 		private readonly clanRepository: MongoRepository<ClanEntity>,
 		@InjectRepository(RankedSeasonalEntity)
-		private readonly rankedSeasonalRepository: MongoRepository<
-			RankedSeasonalEntity
-		>,
+		private readonly rankedSeasonalRepository: MongoRepository<RankedSeasonalEntity>,
 		private readonly bhAPIService: BHAPIService,
 	) {}
 
@@ -46,8 +44,10 @@ export class UtilsService {
 		page: string | number,
 	): Promise<boolean> {
 		const ranked1v1Data = await this.ranked1v1Repository.findOne({
-			region,
-			page,
+			where: {
+				region,
+				page,
+			},
 		});
 
 		return !!ranked1v1Data;
@@ -58,8 +58,10 @@ export class UtilsService {
 		page: string | number,
 	): Promise<Ranked1v1Entity> {
 		const ranked1v1Data = await this.ranked1v1Repository.findOne({
-			region,
-			page,
+			where: {
+				region,
+				page,
+			},
 		});
 
 		return ranked1v1Data;
@@ -123,8 +125,10 @@ export class UtilsService {
 		page: string | number,
 	): Promise<boolean> {
 		const ranked2v2Data = await this.ranked2v2Repository.findOne({
-			region,
-			page,
+			where: {
+				region,
+				page,
+			},
 		});
 
 		return !!ranked2v2Data;
@@ -135,8 +139,10 @@ export class UtilsService {
 		page: string | number,
 	): Promise<Ranked2v2Entity> {
 		const ranked2v2Data = await this.ranked2v2Repository.findOne({
-			region,
-			page,
+			where: {
+				region,
+				page,
+			},
 		});
 
 		return ranked2v2Data;
@@ -200,8 +206,10 @@ export class UtilsService {
 		page: string | number,
 	): Promise<boolean> {
 		const rankedSeasonalData = await this.rankedSeasonalRepository.findOne({
-			region,
-			page,
+			where: {
+				region,
+				page,
+			},
 		});
 
 		return !!rankedSeasonalData;
@@ -212,8 +220,10 @@ export class UtilsService {
 		page: string | number,
 	): Promise<RankedSeasonalEntity> {
 		const rankedSeasonalData = await this.rankedSeasonalRepository.findOne({
-			region,
-			page,
+			where: {
+				region,
+				page,
+			},
 		});
 
 		return rankedSeasonalData;
@@ -278,7 +288,9 @@ export class UtilsService {
 
 	private async isClanDataExists(clan_id: number): Promise<boolean> {
 		const clanData = await this.clanRepository.findOne({
-			clan_id,
+			where: {
+				clan_id,
+			},
 		});
 
 		return !!clanData;
@@ -286,7 +298,9 @@ export class UtilsService {
 
 	private async getClanData(clan_id: number): Promise<ClanEntity> {
 		const clanData = await this.clanRepository.findOne({
-			clan_id,
+			where: {
+				clan_id,
+			},
 		});
 
 		return clanData;

@@ -23,16 +23,22 @@ export class LegendsService {
 		};
 	}
 
-	private async isExists(id: number): Promise<boolean> {
+	private async isExists(legend_id: number): Promise<boolean> {
 		const legendData = await this.legendsRepository.findOne({
-			legend_id: id,
+			where: {
+				legend_id,
+			},
 		});
 
 		return !!legendData;
 	}
 
 	private async getLegendData(legend_id: number): Promise<LegendsEntity> {
-		const legendData = await this.legendsRepository.findOne({ legend_id });
+		const legendData = await this.legendsRepository.findOne({
+			where: {
+				legend_id,
+			},
+		});
 
 		return legendData;
 	}
@@ -81,7 +87,9 @@ export class LegendsService {
 		legend_name,
 	}: GetLegendByNameDTO): Promise<APIRes<LegendsEntity>> {
 		const legendData = await this.legendsRepository.findOne({
-			legend_name_key: legend_name,
+			where: {
+				legend_name_key: legend_name,
+			},
 		});
 
 		if (legendData) {
@@ -110,7 +118,7 @@ export class LegendsService {
 
 	public async getAllLegends(): Promise<APIRes<LegendsEntity[]>> {
 		const allLegends = (await this.legendsRepository.find()).map(
-			legendData => {
+			(legendData) => {
 				delete legendData._id;
 				return legendData;
 			},

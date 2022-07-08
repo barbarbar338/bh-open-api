@@ -1,5 +1,4 @@
 import { NestFactory } from "@nestjs/core";
-import helmet from "fastify-helmet";
 import {
 	FastifyAdapter,
 	NestFastifyApplication,
@@ -15,7 +14,6 @@ async function bootstrap() {
 		new FastifyAdapter(),
 	);
 
-	app.register(helmet);
 	app.enableCors();
 	app.use(morgan("dev"));
 

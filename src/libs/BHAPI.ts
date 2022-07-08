@@ -19,7 +19,7 @@ import {
 	IRanking2v2,
 	IRankingSeasonal,
 } from "api-types";
-import fetch from "node-fetch";
+import axios from "axios";
 import CONFIG from "src/config";
 import * as xml from "xml2js";
 
@@ -32,16 +32,17 @@ export class BHAPIService {
 		queries = { ...queries, api_key: CONFIG.BH_API_KEY };
 		const URLQuery = `?${Object.keys(queries)
 			.map(
-				query =>
+				(query) =>
 					`${encodeURIComponent(query)}=${encodeURIComponent(
 						queries[query] as string | boolean | number,
 					)}`,
 			)
 			.join("&")}`;
 
-		const res = await fetch(`${CONFIG.BH_API_BASE}${path}${URLQuery}`)
-			.then(res => {
-				if (res.ok) return res.json();
+		const res = await axios
+			.get(`${CONFIG.BH_API_BASE}${path}${URLQuery}`)
+			.then((res) => {
+				if (res.status > 199 && res.status < 300) return res.data;
 				else throw new RequestTimeoutException("Brawlhalla API error");
 			})
 			.catch(() => {
@@ -71,7 +72,7 @@ export class BHAPIService {
 		if (rank["2v2"] && rank["2v2"].length > 0)
 			ratings = [...ratings, ...rank["2v2"]];
 
-		const peak = ratings.map(r => r.peak_rating);
+		const peak = ratings.map((r) => r.peak_rating);
 
 		return Math.max(...peak);
 	}
@@ -125,9 +126,11 @@ export class BHAPIService {
 			const url = this.validateURL("https://" + match[0] + "?xml=1");
 
 			if (url) {
-				const res = await fetch(url)
-					.then(r => {
-						if (r.ok) return r.text();
+				const res = await axios
+					.get(url)
+					.then((r) => {
+						if (res.status > 199 && res.status < 300)
+							return res.data;
 						else
 							throw new BadRequestException(
 								"Not a valid Steam profile URL",
@@ -163,11 +166,10 @@ export class BHAPIService {
 	}
 
 	public async getSteamDataByID(steamID: string): Promise<ISteamData> {
-		const res = await fetch(
-			"https://steamcommunity.com/profiles/" + steamID + "?xml=1",
-		)
-			.then(r => {
-				if (r.ok) return r.text();
+		const res = await axios
+			.get("https://steamcommunity.com/profiles/" + steamID + "?xml=1")
+			.then((r) => {
+				if (res.status > 199 && res.status < 300) return res.data;
 				else
 					throw new BadRequestException(
 						"Not a valid Steam profile ID",
@@ -216,7 +218,7 @@ export class BHAPIService {
 		})) as IPlayerStats[];
 
 		const res = playerArray.filter(
-			p =>
+			(p) =>
 				decodeURIComponent(escape(p.name)).toLowerCase() ==
 				name.toLowerCase(),
 		);
@@ -337,7 +339,7 @@ export class BHAPIService {
 		const allLegends = await this.getAllLegends();
 
 		const filtered = allLegends.filter(
-			legend => legend.legend_name_key == name,
+			(legend) => legend.legend_name_key == name,
 		);
 		if (filtered.length < 1)
 			throw new BadRequestException("Legend not found");
@@ -354,7 +356,7 @@ export class BHAPIService {
 
 		let { games, wins } = rankedData;
 		if (rankedData["2v2"] && rankedData["2v2"].length > 0) {
-			rankedData["2v2"].forEach(data => {
+			rankedData["2v2"].forEach((data) => {
 				wins += data.wins;
 				games += data.games;
 			});

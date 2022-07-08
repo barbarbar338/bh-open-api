@@ -25,7 +25,9 @@ export class SteamDataService {
 
 	private async isSteamDataExists(steam_id: string): Promise<boolean> {
 		const statsData = await this.steamdataRepository.findOne({
-			steam_id,
+			where: {
+				steam_id,
+			},
 		});
 
 		return !!statsData;
@@ -33,7 +35,9 @@ export class SteamDataService {
 
 	private async getSteamData(steam_id: string): Promise<SteamDataEntity> {
 		const statsData = await this.steamdataRepository.findOne({
-			steam_id,
+			where: {
+				steam_id,
+			},
 		});
 
 		return statsData;

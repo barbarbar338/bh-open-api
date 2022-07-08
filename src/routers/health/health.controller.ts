@@ -1,6 +1,6 @@
 import { Controller, Get } from "@nestjs/common";
 import {
-	DNSHealthIndicator,
+	HttpHealthIndicator,
 	HealthCheck,
 	HealthCheckResult,
 	HealthCheckService,
@@ -14,7 +14,7 @@ import CONFIG from "src/config";
 export class HealthController {
 	constructor(
 		private readonly health: HealthCheckService,
-		private readonly dns: DNSHealthIndicator,
+		private readonly http: HttpHealthIndicator,
 		private readonly healthService: HealthService,
 	) {}
 
@@ -28,9 +28,9 @@ export class HealthController {
 	public check(): Promise<HealthCheckResult> {
 		return this.health.check([
 			(): Promise<HealthIndicatorResult> =>
-				this.dns.pingCheck("google", "https://google.com"),
+				this.http.pingCheck("google", "https://google.com"),
 			(): Promise<HealthIndicatorResult> =>
-				this.dns.pingCheck("brawlhallaAPI", CONFIG.BH_API_BASE),
+				this.http.pingCheck("brawlhallaAPI", CONFIG.BH_API_BASE),
 		]);
 	}
 }

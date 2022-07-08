@@ -30,7 +30,9 @@ export class RankedService {
 
 	private async isRankedExists(brawlhalla_id: number): Promise<boolean> {
 		const rankedData = await this.rankedRepository.findOne({
-			brawlhalla_id,
+			where: {
+				brawlhalla_id,
+			},
 		});
 
 		return !!rankedData;
@@ -38,7 +40,9 @@ export class RankedService {
 
 	private async getRankedData(brawlhalla_id: number): Promise<RankedEntity> {
 		const rankedData = await this.rankedRepository.findOne({
-			brawlhalla_id,
+			where: {
+				brawlhalla_id,
+			},
 		});
 
 		return rankedData;

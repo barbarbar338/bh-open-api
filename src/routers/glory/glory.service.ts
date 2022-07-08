@@ -30,14 +30,20 @@ export class GloryService {
 
 	private async isGloryExists(brawlhalla_id: number): Promise<boolean> {
 		const gloryData = await this.gloryRepository.findOne({
-			brawlhalla_id,
+			where: {
+				brawlhalla_id,
+			},
 		});
 
 		return !!gloryData;
 	}
 
 	private async getGloryData(brawlhalla_id: number): Promise<GloryEntity> {
-		const gloryData = await this.gloryRepository.findOne({ brawlhalla_id });
+		const gloryData = await this.gloryRepository.findOne({
+			where: {
+				brawlhalla_id,
+			},
+		});
 
 		return gloryData;
 	}

@@ -30,14 +30,20 @@ export class StatsService {
 
 	private async isStatsExists(brawlhalla_id: number): Promise<boolean> {
 		const statsData = await this.statsRepository.findOne({
-			brawlhalla_id,
+			where: {
+				brawlhalla_id,
+			},
 		});
 
 		return !!statsData;
 	}
 
 	private async getStatsData(brawlhalla_id: number): Promise<StatsEntity> {
-		const statsData = await this.statsRepository.findOne({ brawlhalla_id });
+		const statsData = await this.statsRepository.findOne({
+			where: {
+				brawlhalla_id,
+			},
+		});
 
 		return statsData;
 	}
