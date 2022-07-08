@@ -9,6 +9,7 @@ jobs:
     deploy:
         name: Deploy app
         runs-on: ubuntu-latest
+        if: contains(github.event.head_commit.message, '(deploy)')
         steps:
             - uses: actions/checkout@v2
             - uses: superfly/flyctl-actions/setup-flyctl@master
