@@ -1,6 +1,6 @@
 {
 	"name": "bh-open-api",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "An unofficial API server with no connection to Brawlhalla and its developers, prepared for easier and unlimited access to Brawlhalla API services.",
 	"author": "Barış DEMİRCİ <demirci.baris38@gmail.com>",
 	"private": true,
