@@ -40,7 +40,13 @@ export class BHAPIService {
 			.join("&")}`;
 
 		const res = await axios
-			.get(`${CONFIG.BH_API_BASE}${path}${URLQuery}`)
+			.get(`${CONFIG.BH_API_BASE}${path}${URLQuery}`,{
+			 transformResponse: (data) => {
+			  try {
+			    data = decodeURIComponent(this.Escape(data));
+			  } catch {}
+			  return JSON.parse(data);
+			})
 			.then((res) => {
 				if (res.status > 199 && res.status < 300) return res.data;
 				else throw new RequestTimeoutException("Brawlhalla API error");
@@ -51,7 +57,10 @@ export class BHAPIService {
 
 		return res;
 	}
-
+	private Escape(str)
+	{
+		return str.replaceAll("\\u00", "%");
+	}
 	private validateURL(url: string): string {
 		const parsed = url.trim();
 
