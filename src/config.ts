@@ -13,5 +13,5 @@ export default {
 		points: 1,
 		duration: 60 * 2,
 	},
-	SEASONAL_RANKED: "switchcraft",
+	SEASONAL_RANKED: "rotating",
 };
