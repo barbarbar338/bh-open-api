@@ -25,6 +25,8 @@ import * as xml from "xml2js";
 
 @Injectable()
 export class BHAPIService {
+	private escape = (str: string) => str.replaceAll("\\u00", "%");
+
 	private async makeAPIRequest(
 		path: string,
 		queries?: UnknownObject,
@@ -40,12 +42,16 @@ export class BHAPIService {
 			.join("&")}`;
 
 		const res = await axios
-			.get(`${CONFIG.BH_API_BASE}${path}${URLQuery}`,{
-			 transformResponse: (data) => {
-			  try {
-			    data = decodeURIComponent(this.Escape(data));
-			  } catch {}
-			  return JSON.parse(data);
+			.get(`${CONFIG.BH_API_BASE}${path}${URLQuery}`, {
+				transformResponse: (data) => {
+					try {
+						data = decodeURIComponent(this.escape(data));
+					} catch (err) {
+						console.warn("escape error:", err);
+					}
+					return JSON.parse(data);
+				},
+				responseType: "json",
 			})
 			.then((res) => {
 				if (res.status > 199 && res.status < 300) return res.data;
@@ -57,10 +63,7 @@ export class BHAPIService {
 
 		return res;
 	}
-	private Escape(str)
-	{
-		return str.replaceAll("\\u00", "%");
-	}
+
 	private validateURL(url: string): string {
 		const parsed = url.trim();
 
