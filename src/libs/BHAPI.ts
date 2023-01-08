@@ -1,23 +1,22 @@
 import {
+	BadRequestException,
 	Injectable,
 	RequestTimeoutException,
-	BadRequestException,
-	NotFoundException,
 } from "@nestjs/common";
 import {
-	IRankingsOptions,
-	UnknownObject,
-	ISteamData,
 	BHIDFromSteamID,
+	IClan,
+	IGloryData,
 	IPlayerRanked,
 	IPlayerStats,
-	IClan,
 	IRanking1v1,
-	IStaticAllLegends,
-	IStaticLegend,
-	IGloryData,
 	IRanking2v2,
 	IRankingSeasonal,
+	IRankingsOptions,
+	IStaticAllLegends,
+	IStaticLegend,
+	ISteamData,
+	UnknownObject,
 } from "api-types";
 import axios from "axios";
 import CONFIG from "src/config";
@@ -141,8 +140,7 @@ export class BHAPIService {
 				const res = await axios
 					.get(url)
 					.then((r) => {
-						if (res.status > 199 && res.status < 300)
-							return res.data;
+						if (r.status > 199 && r.status < 300) return r.data;
 						else
 							throw new BadRequestException(
 								"Not a valid Steam profile URL",
@@ -181,7 +179,7 @@ export class BHAPIService {
 		const res = await axios
 			.get("https://steamcommunity.com/profiles/" + steamID + "?xml=1")
 			.then((r) => {
-				if (res.status > 199 && res.status < 300) return res.data;
+				if (r.status > 199 && r.status < 300) return r.data;
 				else
 					throw new BadRequestException(
 						"Not a valid Steam profile ID",
@@ -224,20 +222,6 @@ export class BHAPIService {
 		return brawlhalla_id;
 	}
 
-	public async getBHIDFromName(name: string): Promise<number> {
-		const playerArray = (await this.makeAPIRequest("/rankings/1v1/all/1", {
-			name,
-		})) as IPlayerStats[];
-
-		const res = playerArray.filter(
-			(p) =>
-				decodeURIComponent(escape(p.name)).toLowerCase() ==
-				name.toLowerCase(),
-		);
-		if (res[0]) return res[0].brawlhalla_id;
-		else throw new NotFoundException("Player not found");
-	}
-
 	public async getStatsByBHID(bhid: number): Promise<IPlayerStats> {
 		const res = (await this.makeAPIRequest(
 			`/player/${bhid}/stats`,
@@ -274,18 +258,6 @@ export class BHAPIService {
 
 	public async getStatsBySteamURL(steamURL: string): Promise<IPlayerStats> {
 		const bhID = await this.getBHIDFromSteamURL(steamURL);
-
-		return this.getStatsByBHID(bhID);
-	}
-
-	public async getRankedByName(name: string): Promise<IPlayerRanked> {
-		const bhID = await this.getBHIDFromName(name);
-
-		return this.getRankedByBHID(bhID);
-	}
-
-	public async getStatsByName(name: string): Promise<IPlayerStats> {
-		const bhID = await this.getBHIDFromName(name);
 
 		return this.getStatsByBHID(bhID);
 	}
@@ -401,12 +373,6 @@ export class BHAPIService {
 
 	public async getGloryBySteamURL(steamurl: string) {
 		const bhid = await this.getBHIDFromSteamURL(steamurl);
-
-		return this.getGloryByBHID(bhid);
-	}
-
-	public async getGloryByName(name: string) {
-		const bhid = await this.getBHIDFromName(name);
 
 		return this.getGloryByBHID(bhid);
 	}
