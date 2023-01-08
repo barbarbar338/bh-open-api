@@ -1,11 +1,11 @@
 import { Controller, Get, Query } from "@nestjs/common";
-import { SteamDataService } from "./steamdata.service";
 import { APIRes } from "api-types";
+import { RateLimit } from "nestjs-rate-limit";
+import CONFIG from "src/config";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { SteamDataEntity } from "./steamdata.entity";
-import { RateLimit } from "nestjs-rate-limit";
-import CONFIG from "src/config";
+import { SteamDataService } from "./steamdata.service";
 
 @Controller("steamdata")
 export class SteamDataController {

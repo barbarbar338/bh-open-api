@@ -1,11 +1,11 @@
-import { Injectable, HttpStatus } from "@nestjs/common";
-import { APIRes } from "api-types";
-import { MongoRepository } from "typeorm";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { LegendsEntity } from "./legends.entity";
-import { BHAPIService } from "src/libs/BHAPI";
+import { APIRes } from "api-types";
 import { GetLegendByIDDTO } from "src/dto/getLegendByID.dto";
 import { GetLegendByNameDTO } from "src/dto/getLegendByName.dto";
+import { BHAPIService } from "src/libs/BHAPI";
+import { MongoRepository } from "typeorm";
+import { LegendsEntity } from "./legends.entity";
 
 @Injectable()
 export class LegendsService {

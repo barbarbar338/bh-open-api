@@ -1,5 +1,5 @@
 import { ILegendStats, IPlayerClan } from "api-types";
-import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
+import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "StatsEntity" })
 export class StatsEntity {

@@ -1,11 +1,11 @@
 import { Controller, Get, Query } from "@nestjs/common";
-import { LegendsService } from "./legends.service";
 import { APIRes } from "api-types";
+import { RateLimit } from "nestjs-rate-limit";
+import CONFIG from "src/config";
 import { GetLegendByIDDTO } from "src/dto/getLegendByID.dto";
 import { GetLegendByNameDTO } from "src/dto/getLegendByName.dto";
 import { LegendsEntity } from "./legends.entity";
-import { RateLimit } from "nestjs-rate-limit";
-import CONFIG from "src/config";
+import { LegendsService } from "./legends.service";
 
 @Controller("legends")
 export class LegendsController {

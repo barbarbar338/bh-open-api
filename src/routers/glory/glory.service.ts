@@ -1,15 +1,14 @@
-import { Injectable, HttpStatus } from "@nestjs/common";
-import { APIRes } from "api-types";
-import { BHAPIService } from "src/libs/BHAPI";
-import { SteamDataService } from "src/routers/steamdata/steamdata.service";
-import { MongoRepository } from "typeorm";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GloryEntity } from "./glory.entity";
+import { APIRes } from "api-types";
+import CONFIG from "src/config";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
-import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
-import CONFIG from "src/config";
+import { BHAPIService } from "src/libs/BHAPI";
+import { SteamDataService } from "src/routers/steamdata/steamdata.service";
+import { MongoRepository } from "typeorm";
+import { GloryEntity } from "./glory.entity";
 
 @Injectable()
 export class GloryService {
@@ -111,13 +110,5 @@ export class GloryService {
 		});
 
 		return this.getGloryByID({ brawlhalla_id: data.brawlhalla_id });
-	}
-
-	public async getGloryByName({
-		name,
-	}: GetDataByNameDTO): Promise<APIRes<GloryEntity>> {
-		const bhid = await this.bhAPIService.getBHIDFromName(name);
-
-		return this.getGloryByID({ brawlhalla_id: bhid });
 	}
 }

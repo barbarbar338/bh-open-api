@@ -1,15 +1,14 @@
-import { Injectable, HttpStatus } from "@nestjs/common";
-import { APIRes } from "api-types";
-import { BHAPIService } from "src/libs/BHAPI";
-import { MongoRepository } from "typeorm";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { RankedEntity } from "./ranked.entity";
+import { APIRes } from "api-types";
+import CONFIG from "src/config";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
-import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
-import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
-import CONFIG from "src/config";
+import { BHAPIService } from "src/libs/BHAPI";
+import { SteamDataService } from "src/routers/steamdata/steamdata.service";
+import { MongoRepository } from "typeorm";
+import { RankedEntity } from "./ranked.entity";
 
 @Injectable()
 export class RankedService {
@@ -115,13 +114,5 @@ export class RankedService {
 		});
 
 		return this.getRankedByID({ brawlhalla_id: data.brawlhalla_id });
-	}
-
-	public async getRankedByName({
-		name,
-	}: GetDataByNameDTO): Promise<APIRes<RankedEntity>> {
-		const bhid = await this.bhAPIService.getBHIDFromName(name);
-
-		return this.getRankedByID({ brawlhalla_id: bhid });
 	}
 }

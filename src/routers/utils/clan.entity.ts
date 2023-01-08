@@ -1,5 +1,5 @@
 import { IClanMember } from "api-types";
-import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
+import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "ClanEntity" })
 export class ClanEntity {

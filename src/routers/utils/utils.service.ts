@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
 	APIRes,
@@ -7,14 +7,14 @@ import {
 	IRankingSeasonal,
 	RankedRegion,
 } from "api-types";
+import CONFIG from "src/config";
+import { GetDataByClanIDDTO } from "src/dto/getDataByClanID.dto";
+import { GetDataByRankingOptionsDTO } from "src/dto/getDataByRankingOptions.dto";
+import { BHAPIService } from "src/libs/BHAPI";
 import { MongoRepository } from "typeorm";
 import { Ranked1v1Entity } from "./1v1.entity";
 import { Ranked2v2Entity } from "./2v2.entity";
 import { ClanEntity } from "./clan.entity";
-import { GetDataByRankingOptionsDTO } from "src/dto/getDataByRankingOptions.dto";
-import { BHAPIService } from "src/libs/BHAPI";
-import { GetDataByClanIDDTO } from "src/dto/getDataByClanID.dto";
-import CONFIG from "src/config";
 import { RankedSeasonalEntity } from "./seasonal.entity";
 
 @Injectable()

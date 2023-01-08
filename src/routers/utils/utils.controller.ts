@@ -1,11 +1,11 @@
 import { Controller, Get, Query } from "@nestjs/common";
-import { UtilsService } from "./utils.service";
 import { APIRes, IRanking1v1, IRanking2v2 } from "api-types";
-import { GetDataByRankingOptionsDTO } from "src/dto/getDataByRankingOptions.dto";
-import { GetDataByClanIDDTO } from "src/dto/getDataByClanID.dto";
-import { ClanEntity } from "./clan.entity";
 import { RateLimit } from "nestjs-rate-limit";
 import CONFIG from "src/config";
+import { GetDataByClanIDDTO } from "src/dto/getDataByClanID.dto";
+import { GetDataByRankingOptionsDTO } from "src/dto/getDataByRankingOptions.dto";
+import { ClanEntity } from "./clan.entity";
+import { UtilsService } from "./utils.service";
 
 @Controller("utils")
 export class UtilsController {

@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
-import { LegendsController } from "./legends.controller";
-import { LegendsService } from "./legends.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { LegendsEntity } from "./legends.entity";
 import { BHAPIService } from "src/libs/BHAPI";
+import { LegendsController } from "./legends.controller";
+import { LegendsEntity } from "./legends.entity";
+import { LegendsService } from "./legends.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([LegendsEntity])],

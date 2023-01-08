@@ -1,5 +1,5 @@
 import { IRankingSeasonal, RankedRegion } from "api-types";
-import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
+import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "RankedSeasonalEntity" })
 export class RankedSeasonalEntity {

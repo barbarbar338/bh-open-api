@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
-import { RankedController } from "./ranked.controller";
-import { RankedService } from "./ranked.service";
-import { BHAPIService } from "src/libs/BHAPI";
-import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { RankedEntity } from "./ranked.entity";
+import { BHAPIService } from "src/libs/BHAPI";
 import { SteamDataEntity } from "src/routers/steamdata/steamdata.entity";
+import { SteamDataService } from "src/routers/steamdata/steamdata.service";
+import { RankedController } from "./ranked.controller";
+import { RankedEntity } from "./ranked.entity";
+import { RankedService } from "./ranked.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([RankedEntity, SteamDataEntity])],

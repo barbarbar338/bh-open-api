@@ -1,4 +1,4 @@
-import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
+import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "GloryEntity" })
 export class GloryEntity {

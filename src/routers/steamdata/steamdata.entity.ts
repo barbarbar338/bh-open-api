@@ -1,4 +1,4 @@
-import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
+import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "SteamDataEntity" })
 export class SteamDataEntity {

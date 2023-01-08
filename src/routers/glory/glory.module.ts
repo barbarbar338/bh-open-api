@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
-import { GloryController } from "./glory.controller";
-import { GloryService } from "./glory.service";
-import { BHAPIService } from "src/libs/BHAPI";
-import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { GloryEntity } from "./glory.entity";
+import { BHAPIService } from "src/libs/BHAPI";
 import { SteamDataEntity } from "src/routers/steamdata/steamdata.entity";
+import { SteamDataService } from "src/routers/steamdata/steamdata.service";
+import { GloryController } from "./glory.controller";
+import { GloryEntity } from "./glory.entity";
+import { GloryService } from "./glory.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([GloryEntity, SteamDataEntity])],

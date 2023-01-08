@@ -1,5 +1,5 @@
 import { IRanking2v2, RankedRegion } from "api-types";
-import { Entity, Column, ObjectIdColumn, ObjectID } from "typeorm";
+import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "Ranked2v2Entity" })
 export class Ranked2v2Entity {
