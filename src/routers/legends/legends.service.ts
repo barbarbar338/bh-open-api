@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { APIRes } from "api-types";
+import CONFIG from "src/config";
 import { GetLegendByIDDTO } from "src/dto/getLegendByID.dto";
 import { GetLegendByNameDTO } from "src/dto/getLegendByName.dto";
 import { BHAPIService } from "src/libs/BHAPI";
@@ -45,7 +46,9 @@ export class LegendsService {
 
 	public async syncLegend({
 		legend_id,
-	}: GetLegendByIDDTO): Promise<APIRes<LegendsEntity>> {
+	}: GetLegendByIDDTO): Promise<
+		APIRes<LegendsEntity & { thumbnail: string }>
+	> {
 		const legendData = new LegendsEntity({
 			...(await this.bhAPIService.getLegendByID(legend_id)),
 		});
@@ -64,13 +67,18 @@ export class LegendsService {
 		return {
 			statusCode: HttpStatus.OK,
 			message: `${legendData.bio_name} synced`,
-			data: legendData,
+			data: {
+				...legendData,
+				thumbnail: CONFIG.BANNERS[legendData.legend_name_key],
+			},
 		};
 	}
 
 	public async getLegendByID({
 		legend_id,
-	}: GetLegendByIDDTO): Promise<APIRes<LegendsEntity>> {
+	}: GetLegendByIDDTO): Promise<
+		APIRes<LegendsEntity & { thumbnail: string }>
+	> {
 		const legendData = await this.getLegendData(legend_id);
 
 		if (!legendData) return this.syncLegend({ legend_id });
@@ -79,13 +87,18 @@ export class LegendsService {
 			return {
 				statusCode: HttpStatus.OK,
 				message: `${legendData.bio_name} from database`,
-				data: legendData,
+				data: {
+					...legendData,
+					thumbnail: CONFIG.BANNERS[legendData.legend_name_key],
+				},
 			};
 		}
 	}
 	public async getLegendByName({
 		legend_name,
-	}: GetLegendByNameDTO): Promise<APIRes<LegendsEntity>> {
+	}: GetLegendByNameDTO): Promise<
+		APIRes<LegendsEntity & { thumbnail: string }>
+	> {
 		const legendData = await this.legendsRepository.findOne({
 			where: {
 				legend_name_key: legend_name,
@@ -98,7 +111,10 @@ export class LegendsService {
 			return {
 				statusCode: HttpStatus.OK,
 				message: `${legendData.bio_name} from database`,
-				data: legendData,
+				data: {
+					...legendData,
+					thumbnail: CONFIG.BANNERS[legendData.legend_name_key],
+				},
 			};
 		} else {
 			const newData = new LegendsEntity({
@@ -111,12 +127,17 @@ export class LegendsService {
 			return {
 				statusCode: HttpStatus.OK,
 				message: `${newData.bio_name} sync`,
-				data: newData,
+				data: {
+					...newData,
+					thumbnail: CONFIG.BANNERS[newData.legend_name_key],
+				},
 			};
 		}
 	}
 
-	public async getAllLegends(): Promise<APIRes<LegendsEntity[]>> {
+	public async getAllLegends(): Promise<
+		APIRes<(LegendsEntity & { thumbnail: string })[]>
+	> {
 		const allLegends = (await this.legendsRepository.find()).map(
 			(legendData) => {
 				delete legendData._id;
@@ -127,7 +148,10 @@ export class LegendsService {
 		return {
 			statusCode: HttpStatus.OK,
 			message: "All legends from database",
-			data: allLegends,
+			data: allLegends.map((l) => ({
+				...l,
+				thumbnail: CONFIG.BANNERS[l.legend_name_key],
+			})),
 		};
 	}
 }
