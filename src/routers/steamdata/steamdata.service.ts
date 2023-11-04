@@ -94,9 +94,8 @@ export class SteamDataService {
 	public async getSteamDataByURL({
 		steam_url,
 	}: GetDataBySteamURLDTO): Promise<APIRes<SteamDataEntity>> {
-		const { steam_id } = await this.bhAPIService.getSteamDataByURL(
-			steam_url,
-		);
+		const { steam_id } =
+			await this.bhAPIService.getSteamDataByURL(steam_url);
 
 		return this.getSteamDataByID({ steam_id });
 	}

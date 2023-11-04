@@ -1,10 +1,10 @@
 import { IRanking2v2, RankedRegion } from "api-types";
-import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
+import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "Ranked2v2Entity" })
 export class Ranked2v2Entity {
 	@ObjectIdColumn()
-	_id: ObjectID;
+	_id: ObjectId;
 
 	@Column({ nullable: false })
 	page: number | string;

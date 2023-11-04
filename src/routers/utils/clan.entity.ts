@@ -1,10 +1,10 @@
 import { IClanMember } from "api-types";
-import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
+import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "ClanEntity" })
 export class ClanEntity {
 	@ObjectIdColumn()
-	_id: ObjectID;
+	_id: ObjectId;
 
 	@Column({ nullable: false, unique: true })
 	clan_id: number;

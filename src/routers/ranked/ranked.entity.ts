@@ -1,10 +1,10 @@
 import { I2v2Team, ILegendRanked, RankedRegion, RankedTier } from "api-types";
-import { Column, Entity, ObjectID, ObjectIdColumn } from "typeorm";
+import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "RankedEntity" })
 export class RankedEntity {
 	@ObjectIdColumn()
-	_id: ObjectID;
+	_id: ObjectId;
 
 	@Column({ nullable: false, unique: true })
 	brawlhalla_id: number;

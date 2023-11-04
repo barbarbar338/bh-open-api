@@ -50,9 +50,8 @@ export class RankedService {
 	public async syncRanked({
 		brawlhalla_id,
 	}: GetDataByBHIDDTO): Promise<APIRes<RankedEntity>> {
-		const rankedData = await this.bhAPIService.getRankedByBHID(
-			brawlhalla_id,
-		);
+		const rankedData =
+			await this.bhAPIService.getRankedByBHID(brawlhalla_id);
 		const isExists = await this.isRankedExists(brawlhalla_id);
 		const data = new RankedEntity({
 			...rankedData,
