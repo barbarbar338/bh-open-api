@@ -79,5 +79,6 @@ export default {
 			"https://cms.brawlhalla.com/c/uploads/2022/03/a_Roster_Pose_FairyQueenM.png",
 		ezio: "https://cms.brawlhalla.com/c/uploads/2022/07/a_Roster_Pose_EzioM.png",
 		tezca: "https://cms.brawlhalla.com/c/uploads/2022/12/a_Roster_Pose_LuchadorM.png",
+		loki: "https://cms.brawlhalla.com/c/uploads/2023/09/Loki_icon-1.png",
 	},
 };
