@@ -31,4 +31,3 @@ lerna-debug.log*
 
 # Others
 *.env
-*lock*
