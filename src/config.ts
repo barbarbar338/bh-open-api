@@ -21,9 +21,9 @@ export default {
 		"lord vraxx":
 			"https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_VraxxM-1.png",
 		gnash: "https://cms.brawlhalla.com/c/uploads/2021/07/gnash.png",
-		nai: "https://cms.brawlhalla.com/c/uploads/2021/07/nai.png",
+		"queen nai": "https://cms.brawlhalla.com/c/uploads/2021/07/nai.png",
 		hattori: "https://cms.brawlhalla.com/c/uploads/2021/07/hattori.png",
-		roland: "https://cms.brawlhalla.com/c/uploads/2021/07/roland.png",
+		"sir roland": "https://cms.brawlhalla.com/c/uploads/2021/07/roland.png",
 		scarlet: "https://cms.brawlhalla.com/c/uploads/2021/07/scarlet.png",
 		thatch: "https://cms.brawlhalla.com/c/uploads/2021/07/thatch.png",
 		ada: "https://cms.brawlhalla.com/c/uploads/2021/07/ada.png",
@@ -41,7 +41,7 @@ export default {
 		diana: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_MonsterHunterM.png",
 		jhala: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_BarbarianM.png",
 		kor: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_GolemM.png",
-		wushang:
+		"wu shang":
 			"https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_MonkM.png",
 		val: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_ValM.png",
 		ragnir: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_DragonM.png",
@@ -49,7 +49,7 @@ export default {
 		mirage: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_AssassinM.png",
 		nix: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_ReaperM.png",
 		mordex: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_WerewolfM.png",
-		yumeko: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_KitsuneM.png",
+		yumiko: "https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_KitsuneM.png",
 		artemis:
 			"https://cms.brawlhalla.com/c/uploads/2021/07/a_Roster_Pose_SpaceHunterM.png",
 		caspian:
@@ -80,5 +80,8 @@ export default {
 		ezio: "https://cms.brawlhalla.com/c/uploads/2022/07/a_Roster_Pose_EzioM.png",
 		tezca: "https://cms.brawlhalla.com/c/uploads/2022/12/a_Roster_Pose_LuchadorM.png",
 		loki: "https://cms.brawlhalla.com/c/uploads/2023/09/Loki_icon-1.png",
+		thea: "https://cms.brawlhalla.com/c/uploads/2023/03/a_Roster_Pose_SpeedsterM.png",
+		redraptor:
+			"https://cms.brawlhalla.com/c/uploads/2023/06/a_Roster_Pose_SentaiM.png",
 	},
 };
