@@ -23,8 +23,6 @@ import { UtilsModule } from "./routers/utils/utils.module";
 			database: "bhapi",
 			synchronize: true,
 			logger: "debug",
-			useUnifiedTopology: true,
-			useNewUrlParser: true,
 			autoLoadEntities: true,
 		}),
 		LegendsModule,
