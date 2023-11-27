@@ -3,11 +3,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { APIRes } from "api-types";
 import CONFIG from "src/config";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
+import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { BHAPIService } from "src/libs/BHAPI";
 import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { MongoRepository } from "typeorm";
+import { BHIDEntity } from "../utils/bhid.entity";
 import { GloryEntity } from "./glory.entity";
 
 @Injectable()
@@ -15,6 +17,8 @@ export class GloryService {
 	constructor(
 		@InjectRepository(GloryEntity)
 		private readonly gloryRepository: MongoRepository<GloryEntity>,
+		@InjectRepository(BHIDEntity)
+		private readonly bhidRepository: MongoRepository<BHIDEntity>,
 		private readonly bhAPIService: BHAPIService,
 		private readonly steamDataService: SteamDataService,
 	) {}
@@ -90,6 +94,47 @@ export class GloryService {
 				};
 			}
 		}
+	}
+
+	public async getIDByName(name: string): Promise<number> {
+		const bhidData = await this.bhidRepository.findOne({
+			where: {
+				name,
+			},
+		});
+
+		if (!bhidData) {
+			const bhid = await this.bhAPIService.getBHIDFromName(name);
+			const data = new BHIDEntity({ bhid, name, lastSynced: Date.now() });
+
+			const repository = this.bhidRepository.create(data);
+			await this.bhidRepository.save(repository);
+
+			return bhid;
+		} else {
+			if (Date.now() - bhidData.lastSynced > CONFIG.SYNC_PERIOD) {
+				const bhid = await this.bhAPIService.getBHIDFromName(name);
+				const data = new BHIDEntity({
+					bhid,
+					name,
+					lastSynced: Date.now(),
+				});
+
+				await this.bhidRepository.updateOne({ name }, { $set: data });
+
+				return bhid;
+			} else {
+				return bhidData.bhid;
+			}
+		}
+	}
+
+	public async getGloryByName({
+		name,
+	}: GetDataByNameDTO): Promise<APIRes<GloryEntity>> {
+		const brawlhalla_id = await this.getIDByName(name);
+
+		return this.getGloryByID({ brawlhalla_id });
 	}
 
 	public async getGloryBySteamID({

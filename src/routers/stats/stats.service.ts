@@ -3,11 +3,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { APIRes } from "api-types";
 import CONFIG from "src/config";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
+import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { BHAPIService } from "src/libs/BHAPI";
 import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { MongoRepository } from "typeorm";
+import { GloryService } from "../glory/glory.service";
 import { StatsEntity } from "./stats.entity";
 
 @Injectable()
@@ -17,6 +19,7 @@ export class StatsService {
 		private readonly statsRepository: MongoRepository<StatsEntity>,
 		private readonly bhAPIService: BHAPIService,
 		private readonly steamDataService: SteamDataService,
+		private readonly gloryService: GloryService,
 	) {}
 
 	public returnPing(): APIRes<null> {
@@ -90,6 +93,14 @@ export class StatsService {
 				};
 			}
 		}
+	}
+
+	public async getStatsByName({
+		name,
+	}: GetDataByNameDTO): Promise<APIRes<StatsEntity>> {
+		const brawlhalla_id = await this.gloryService.getIDByName(name);
+
+		return this.getStatsByID({ brawlhalla_id });
 	}
 
 	public async getStatsBySteamID({

@@ -3,6 +3,7 @@ import { APIRes } from "api-types";
 import { RateLimit } from "nestjs-rate-limit";
 import CONFIG from "src/config";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
+import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { StatsEntity } from "./stats.entity";
@@ -44,5 +45,12 @@ export class StatsController {
 		@Query() getDataBySteamURLDTO: GetDataBySteamURLDTO,
 	): Promise<APIRes<StatsEntity>> {
 		return this.statsService.getStatsBySteamURL(getDataBySteamURLDTO);
+	}
+
+	@Get("name")
+	public async getStatsByName(
+		@Query() getDataByNameDTO: GetDataByNameDTO,
+	): Promise<APIRes<StatsEntity>> {
+		return this.statsService.getStatsByName(getDataByNameDTO);
 	}
 }

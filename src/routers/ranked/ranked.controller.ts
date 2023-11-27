@@ -3,6 +3,7 @@ import { APIRes } from "api-types";
 import { RateLimit } from "nestjs-rate-limit";
 import CONFIG from "src/config";
 import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
+import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
 import { RankedEntity } from "./ranked.entity";
@@ -44,5 +45,12 @@ export class RankedController {
 		@Query() getDataBySteamURLDTO: GetDataBySteamURLDTO,
 	): Promise<APIRes<RankedEntity>> {
 		return this.rankedService.getRankedBySteamURL(getDataBySteamURLDTO);
+	}
+
+	@Get("name")
+	public async getRankedByName(
+		@Query() getDataByNameDTO: GetDataByNameDTO,
+	): Promise<APIRes<RankedEntity>> {
+		return this.rankedService.getRankedByName(getDataByNameDTO);
 	}
 }

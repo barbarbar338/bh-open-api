@@ -1,6 +1,7 @@
 import {
 	BadRequestException,
 	Injectable,
+	NotFoundException,
 	RequestTimeoutException,
 } from "@nestjs/common";
 import {
@@ -127,6 +128,15 @@ export class BHAPIService {
 			return Math.floor(1400 + (elo - 1400) / (3 - (3000 - elo) / 800));
 
 		return elo;
+	}
+
+	public async getBHIDFromName(name: string): Promise<number> {
+		const playerArray = (await this.makeAPIRequest("/rankings/1v1/all/1", {
+			name,
+		})) as IPlayerStats[];
+
+		if (playerArray[0]) return playerArray[0].brawlhalla_id;
+		else throw new NotFoundException("Player not found");
 	}
 
 	public async getSteamDataByURL(profileUrl: string): Promise<ISteamData> {
