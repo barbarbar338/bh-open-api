@@ -83,5 +83,7 @@ export default {
 		thea: "https://cms.brawlhalla.com/c/uploads/2023/03/a_Roster_Pose_SpeedsterM.png",
 		redraptor:
 			"https://cms.brawlhalla.com/c/uploads/2023/06/a_Roster_Pose_SentaiM.png",
+			vivi: "https://cms.brawlhalla.com/c/uploads/2024/04/Vivilegendpage.jpg",
+			seven: "https://cms.brawlhalla.com/c/uploads/2023/12/roboengineer-rostericon.png"
 	},
 };
