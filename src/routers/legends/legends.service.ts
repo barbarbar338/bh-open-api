@@ -99,6 +99,7 @@ export class LegendsService {
 	}: GetLegendByNameDTO): Promise<
 		APIRes<LegendsEntity & { thumbnail: string }>
 	> {
+		legend_name.toLowerCase();
 		const legendData = await this.legendsRepository.findOne({
 			where: {
 				legend_name_key: legend_name,
