@@ -83,7 +83,9 @@ export default {
 		thea: "https://cms.brawlhalla.com/c/uploads/2023/03/a_Roster_Pose_SpeedsterM.png",
 		redraptor:
 			"https://cms.brawlhalla.com/c/uploads/2023/06/a_Roster_Pose_SentaiM.png",
-			vivi: "https://cms.brawlhalla.com/c/uploads/2024/04/Vivilegendpage.jpg",
-			seven: "https://cms.brawlhalla.com/c/uploads/2023/12/roboengineer-rostericon.png"
+		vivi: "https://cms.brawlhalla.com/c/uploads/2024/04/Vivilegendpage.jpg",
+		seven: "https://cms.brawlhalla.com/c/uploads/2023/12/roboengineer-rostericon.png",
+		imugi: "https://cms.brawlhalla.com/c/uploads/2024/07/imgui-icon.png",
+		"king-zuva": "https://cms.brawlhalla.com/c/uploads/2024/10/a_Roster_Pose_ZuvaM.png"
 	},
 };

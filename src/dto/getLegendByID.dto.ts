@@ -6,7 +6,7 @@ export class GetLegendByIDDTO {
 	@Transform((i) => parseInt(i.value))
 	@IsNumber()
 	@Min(3)
-	@Max(64)
+	@Max(66)
 	@NotEquals(61)
 	legend_id: number;
 }
