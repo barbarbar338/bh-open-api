@@ -86,6 +86,6 @@ export default {
 		vivi: "https://cms.brawlhalla.com/c/uploads/2024/04/Vivilegendpage.jpg",
 		seven: "https://cms.brawlhalla.com/c/uploads/2023/12/roboengineer-rostericon.png",
 		imugi: "https://cms.brawlhalla.com/c/uploads/2024/07/imgui-icon.png",
-		"king-zuva": "https://cms.brawlhalla.com/c/uploads/2024/10/a_Roster_Pose_ZuvaM.png"
+		"king zuva": "https://cms.brawlhalla.com/c/uploads/2024/10/a_Roster_Pose_ZuvaM.png"
 	},
 };
