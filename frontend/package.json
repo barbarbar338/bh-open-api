@@ -1,0 +1,53 @@
+{
+    "author": {
+        "email": "hi@338.rocks",
+        "name": "Barış DEMİRCİ",
+        "url": "https://338.rocks"
+    },
+    "browserslist": {
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ],
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ]
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.7",
+        "jquery": "^3.7.1",
+        "react": "^19.1.0",
+        "react-document-meta": "^3.0.0-beta.2",
+        "react-dom": "^19.1.0",
+        "react-loader-spinner": "^6.1.6",
+        "react-router-dom": "^7.7.1",
+        "react-scripts": "^5.0.1",
+        "react-toastify": "^11.0.5"
+    },
+    "devDependencies": {
+        "prettier": "^3.6.2",
+        "serve": "^14.2.4",
+        "taze": "^19.1.0"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "license": "MPL-2.0",
+    "name": "bh-open-api-webpage",
+    "private": true,
+    "scripts": {
+        "build": "react-scripts build",
+        "dev": "react-scripts start",
+        "eject": "react-scripts eject",
+        "format": "prettier --write .",
+        "start": "serve -s build",
+        "update": "taze latest -w"
+    },
+    "version": "0.1.1"
+}
