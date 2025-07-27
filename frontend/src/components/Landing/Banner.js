@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import CONFIG from "../../config";
 import BannerImage from "../../images/banner.png";
 
 export default function Banner() {
+    const apiURL = `${window.location.protocol}//${window.location.host}/v1/`;
+
     return (
         <section className="text-center mg-auto pd-1-5">
             <img
@@ -21,8 +22,8 @@ export default function Banner() {
             </p>
             <p className="lead">
                 Default API URL:{" "}
-                <a href={CONFIG.API_URL} target="_blank" rel="noreferrer">
-                    {CONFIG.API_URL}
+                <a href={apiURL} target="_blank" rel="noreferrer">
+                    {apiURL}
                 </a>
             </p>
             <Link className="btn btn-lg btn-outline-primary" to="/features">

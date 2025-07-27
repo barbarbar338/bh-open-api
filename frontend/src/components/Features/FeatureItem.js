@@ -1,6 +1,5 @@
 import { Component } from "react";
 import { toast } from "react-toastify";
-import CONFIG from "../../config";
 
 export default class FeatureItem extends Component {
     state = {
@@ -18,10 +17,12 @@ export default class FeatureItem extends Component {
             query: e.target.value,
         });
     };
-    handleButtonClick = async (e) => {
+    handleButtonClick = async () => {
         if (!this.state.query || this.state.query.length < 1)
             return this.createErrorToast("Specify a request query");
-        const request = await fetch(`${CONFIG.API_URL}${this.state.query}`);
+
+        const apiURL = `${window.location.protocol}//${window.location.host}/v1/`;
+        const request = await fetch(`${apiURL}${this.state.query}`);
         const response = await request.json();
         if (!request.ok) return this.createErrorToast(response.message);
         this.setState({
@@ -58,7 +59,7 @@ export default class FeatureItem extends Component {
                     <h3>{this.props.title}</h3>
                     <div className="input-group">
                         <div className="input-group-prepend">
-                            <span className="input-group-text">api/</span>
+                            <span className="input-group-text">v1/</span>
                         </div>
                         <input
                             type="text"
