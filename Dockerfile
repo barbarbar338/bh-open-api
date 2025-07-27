@@ -1,42 +1,33 @@
-# syntax = docker/dockerfile:1
+FROM node:lts-alpine AS frontend-builder
 
-# Adjust NODE_VERSION as desired
-ARG NODE_VERSION=18.18.1
-FROM node:${NODE_VERSION}-slim as base
-
-LABEL fly_launch_runtime="NestJS"
-
-# NestJS app lives here
 WORKDIR /app
 
-# Set production environment
-ENV NODE_ENV="production"
+COPY frontend .
 
+RUN yarn install --frozen-lockfile
+RUN yarn build
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
+FROM node:lts-alpine AS backend-builder
 
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install -y build-essential pkg-config python-is-python3
+WORKDIR /app
 
-# Install node modules
-COPY --link package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production=false
+COPY backend .
 
-# Copy application code
-COPY --link . .
+RUN yarn install --frozen-lockfile
+RUN yarn build
 
-# Build application
-RUN yarn run build
+FROM node:lts-alpine
 
+COPY --from=frontend-builder /app/build /usr/share/nginx/html
+COPY --from=backend-builder /app /app
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Final stage for app image
-FROM base
+RUN apk add --no-cache tini nginx
 
-# Copy built application
-COPY --from=build /app /app
+EXPOSE 80
 
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD [ "yarn", "run", "start" ]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]
