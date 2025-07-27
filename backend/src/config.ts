@@ -6,7 +6,7 @@ export default {
 	API_VERSION: "/v1",
 	BH_API_BASE: "https://api.brawlhalla.com",
 	BH_API_KEY: process.env.BH_API_KEY,
-	PORT: parseInt(process.env.PORT as unknown as string),
+	PORT: 5555,
 	MONGODB_URI: process.env.MONGODB_URI,
 	SYNC_PERIOD: 1000 * 60 * 15,
 	SYNC_RATELIMIT: {
