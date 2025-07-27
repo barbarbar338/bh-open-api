@@ -1,7 +1,7 @@
-import DocumentMeta from "react-document-meta";
-import Banner from "../images/banner.png";
-import { Link } from "react-router-dom";
 import { Component } from "react";
+import DocumentMeta from "react-document-meta";
+import { Link } from "react-router-dom";
+import Banner from "../images/banner.png";
 export default class Layout extends Component {
     render() {
         return (
@@ -40,7 +40,7 @@ export default class Layout extends Component {
                             <li className="nav-item active">
                                 <a
                                     className="nav-link"
-                                    href="https://github.com/barbarbar338/bh-open-api-webpage"
+                                    href="https://github.com/barbarbar338/bh-open-api"
                                     target="_blank"
                                     rel="noreferrer"
                                 >
