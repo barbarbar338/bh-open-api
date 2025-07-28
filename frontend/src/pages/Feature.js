@@ -2,6 +2,7 @@ import { Component } from "react";
 import { toast } from "react-toastify";
 import Banner from "../components/Feature/Banner";
 import Layout from "../components/Layout";
+import config from "../config";
 
 export default class Landing extends Component {
     state = {
@@ -27,7 +28,7 @@ export default class Landing extends Component {
         if (!this.state.query || this.state.query.length < 1)
             return this.createErrorToast("Specify a request query");
 
-        const apiURL = `${window.location.protocol}//${window.location.host}/v1/`;
+        const apiURL = `${window.location.protocol}//${window.location.host}/${config.apiVersion}/`;
         const request = await fetch(`${apiURL}${this.state.query}`);
         const response = await request.json();
         if (!request.ok) return this.createErrorToast(response.message);

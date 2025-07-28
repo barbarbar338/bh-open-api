@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+import config from "../../config";
 import BannerImage from "../../images/banner.png";
 
 export default function Banner() {
-    const apiURL = `${window.location.protocol}//${window.location.host}/v1/`;
+    const apiURL = `${window.location.protocol}//${window.location.host}/${config.apiVersion}/`;
 
     return (
         <section className="text-center mg-auto pd-1-5">

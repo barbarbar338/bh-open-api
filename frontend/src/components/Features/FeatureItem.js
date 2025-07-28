@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { toast } from "react-toastify";
+import config from "../../config";
 
 export default class FeatureItem extends Component {
     state = {
@@ -21,7 +22,7 @@ export default class FeatureItem extends Component {
         if (!this.state.query || this.state.query.length < 1)
             return this.createErrorToast("Specify a request query");
 
-        const apiURL = `${window.location.protocol}//${window.location.host}/v1/`;
+        const apiURL = `${window.location.protocol}//${window.location.host}/${config.apiVersion}/`;
         const request = await fetch(`${apiURL}${this.state.query}`);
         const response = await request.json();
         if (!request.ok) return this.createErrorToast(response.message);
@@ -59,7 +60,9 @@ export default class FeatureItem extends Component {
                     <h3>{this.props.title}</h3>
                     <div className="input-group">
                         <div className="input-group-prepend">
-                            <span className="input-group-text">v1/</span>
+                            <span className="input-group-text">
+                                {config.apiVersion}/
+                            </span>
                         </div>
                         <input
                             type="text"

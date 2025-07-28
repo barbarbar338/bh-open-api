@@ -55,7 +55,53 @@ export default class Layout extends Component {
                         </ul>
                     </div>
                 </nav>
+
                 {this.props.children}
+
+                <footer className="relative">
+                    <div className="flex flex-wrap items-center md:justify-between justify-center">
+                        <div className="w-full md:w-4/12 px-4 mx-auto text-center">
+                            <div className="text-sm text-gray-500 font-semibold py-3">
+                                Copyright © {new Date().getFullYear()}{" "}
+                                <a
+                                    href="https://338.rocks"
+                                    className="text-gray-500 hover:text-gray-800"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    barbarbar338
+                                </a>{" "}
+                                | Made with 💖 and ☕ using{" "}
+                                <a
+                                    href="https://nestjs.com/"
+                                    className="text-gray-500 hover:text-gray-800"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    Nest
+                                </a>
+                                ,{" "}
+                                <a
+                                    href="https://react.dev/"
+                                    className="text-gray-500 hover:text-gray-800"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    React
+                                </a>{" "}
+                                and{" "}
+                                <a
+                                    href="https://tailwindcss.com/"
+                                    className="text-gray-500 hover:text-gray-800"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    Tailwind
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
             </DocumentMeta>
         );
     }

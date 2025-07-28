@@ -3,7 +3,7 @@ import { config } from "dotenv";
 config();
 
 export default {
-	API_VERSION: "/v1",
+	API_VERSION: "/v2",
 	BH_API_BASE: "https://api.brawlhalla.com",
 	BH_API_KEY: process.env.BH_API_KEY,
 	PORT: 5555,
