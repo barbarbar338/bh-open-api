@@ -1,4 +1,13 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
+import {
+	BHAPIError,
+	getBHIDFromName,
+	getGloryByBHID,
+} from "@barbarbar338/bhapi";
+import {
+	HttpStatus,
+	Injectable,
+	InternalServerErrorException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { APIRes } from "api-types";
 import CONFIG from "src/config";
@@ -6,7 +15,6 @@ import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
-import { BHAPIService } from "src/libs/BHAPI";
 import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { MongoRepository } from "typeorm";
 import { BHIDEntity } from "../utils/bhid.entity";
@@ -19,7 +27,6 @@ export class GloryService {
 		private readonly gloryRepository: MongoRepository<GloryEntity>,
 		@InjectRepository(BHIDEntity)
 		private readonly bhidRepository: MongoRepository<BHIDEntity>,
-		private readonly bhAPIService: BHAPIService,
 		private readonly steamDataService: SteamDataService,
 	) {}
 
@@ -54,25 +61,47 @@ export class GloryService {
 	public async syncGlory({
 		brawlhalla_id,
 	}: GetDataByBHIDDTO): Promise<APIRes<GloryEntity>> {
-		const gloryData = await this.bhAPIService.getGloryByBHID(brawlhalla_id);
-		const isExists = await this.isGloryExists(brawlhalla_id);
-		const data = new GloryEntity({ ...gloryData, lastSynced: Date.now() });
+		try {
+			const gloryData = await getGloryByBHID(brawlhalla_id);
 
-		if (isExists) {
-			await this.gloryRepository.updateOne(
-				{ brawlhalla_id },
-				{ $set: data },
-			);
-		} else {
-			const repository = this.gloryRepository.create(data);
-			await this.gloryRepository.save(repository);
+			const isExists = await this.isGloryExists(brawlhalla_id);
+			const data = new GloryEntity({
+				...gloryData,
+				lastSynced: Date.now(),
+			});
+
+			if (isExists) {
+				await this.gloryRepository.updateOne(
+					{ brawlhalla_id },
+					{ $set: data },
+				);
+			} else {
+				const repository = this.gloryRepository.create(data);
+				await this.gloryRepository.save(repository);
+			}
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: `${data.name} synced`,
+				data: data,
+			};
+		} catch (error) {
+			console.error(error);
+
+			if (error instanceof BHAPIError) {
+				if (error.status == 429)
+					throw new InternalServerErrorException(
+						`Rate limit exceeded. Please try again later.`,
+					);
+				else
+					throw new InternalServerErrorException(
+						`Failed to sync glory for Brawlhalla ID ${brawlhalla_id}: ${error.message}`,
+					);
+			} else
+				throw new InternalServerErrorException(
+					`Failed to sync glory for Brawlhalla ID ${brawlhalla_id}`,
+				);
 		}
-
-		return {
-			statusCode: HttpStatus.OK,
-			message: `${data.name} synced`,
-			data: data,
-		};
 	}
 
 	public async getGloryByID({
@@ -103,29 +132,54 @@ export class GloryService {
 			},
 		});
 
-		if (!bhidData) {
-			const bhid = await this.bhAPIService.getBHIDFromName(name);
-			const data = new BHIDEntity({ bhid, name, lastSynced: Date.now() });
-
-			const repository = this.bhidRepository.create(data);
-			await this.bhidRepository.save(repository);
-
-			return bhid;
-		} else {
-			if (Date.now() - bhidData.lastSynced > CONFIG.SYNC_PERIOD) {
-				const bhid = await this.bhAPIService.getBHIDFromName(name);
+		try {
+			if (!bhidData) {
+				const bhid = await getBHIDFromName(name);
 				const data = new BHIDEntity({
 					bhid,
 					name,
 					lastSynced: Date.now(),
 				});
 
-				await this.bhidRepository.updateOne({ name }, { $set: data });
+				const repository = this.bhidRepository.create(data);
+				await this.bhidRepository.save(repository);
 
 				return bhid;
 			} else {
-				return bhidData.bhid;
+				if (Date.now() - bhidData.lastSynced > CONFIG.SYNC_PERIOD) {
+					const bhid = await getBHIDFromName(name);
+					const data = new BHIDEntity({
+						bhid,
+						name,
+						lastSynced: Date.now(),
+					});
+
+					await this.bhidRepository.updateOne(
+						{ name },
+						{ $set: data },
+					);
+
+					return bhid;
+				} else {
+					return bhidData.bhid;
+				}
 			}
+		} catch (error) {
+			console.error(error);
+
+			if (error instanceof BHAPIError) {
+				if (error.status == 429)
+					throw new InternalServerErrorException(
+						`Rate limit exceeded. Please try again later.`,
+					);
+				else
+					throw new InternalServerErrorException(
+						`Failed to get Brawlhalla ID for name ${name}: ${error.message}`,
+					);
+			} else
+				throw new InternalServerErrorException(
+					`Failed to get Brawlhalla ID for name ${name}`,
+				);
 		}
 	}
 

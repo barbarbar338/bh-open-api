@@ -1,4 +1,4 @@
-import { IRanking2v2, RankedRegion } from "api-types";
+import { RankedRegion, Ranking2v2 } from "@barbarbar338/bhapi";
 import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "Ranked2v2Entity" })
@@ -13,7 +13,7 @@ export class Ranked2v2Entity {
 	region: RankedRegion;
 
 	@Column({ nullable: false })
-	data: IRanking2v2[];
+	data: Ranking2v2[];
 
 	@Column({ nullable: false })
 	lastSynced: number;

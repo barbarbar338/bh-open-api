@@ -1,4 +1,4 @@
-import { IRankingSeasonal, RankedRegion } from "api-types";
+import { RankedRegion, RankingSeasonal } from "@barbarbar338/bhapi";
 import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "RankedSeasonalEntity" })
@@ -13,7 +13,7 @@ export class RankedSeasonalEntity {
 	region: RankedRegion;
 
 	@Column({ nullable: false })
-	data: IRankingSeasonal[];
+	data: RankingSeasonal[];
 
 	@Column({ nullable: false })
 	lastSynced: number;

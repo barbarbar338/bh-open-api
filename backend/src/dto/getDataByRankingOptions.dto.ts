@@ -1,4 +1,4 @@
-import { RankedRegion } from "api-types";
+import { RankedRegion } from "@barbarbar338/bhapi";
 import { IsDefined } from "class-validator";
 
 export class GetDataByRankingOptionsDTO {

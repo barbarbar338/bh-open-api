@@ -1,4 +1,4 @@
-import { ILegendStats, IPlayerClan } from "api-types";
+import { LegendStats, PlayerClan } from "@barbarbar338/bhapi";
 import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "StatsEntity" })
@@ -58,10 +58,10 @@ export class StatsEntity {
 	kosnowball: number;
 
 	@Column({ nullable: false })
-	legends: ILegendStats[];
+	legends: LegendStats[];
 
 	@Column({ nullable: false })
-	clan: IPlayerClan | undefined;
+	clan: PlayerClan | undefined;
 
 	@Column({ nullable: false })
 	lastSynced: number;

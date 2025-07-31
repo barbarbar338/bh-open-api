@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { BHAPIError, getStatsByBHID } from "@barbarbar338/bhapi";
+import {
+	HttpStatus,
+	Injectable,
+	InternalServerErrorException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { APIRes } from "api-types";
 import CONFIG from "src/config";
@@ -6,7 +11,6 @@ import { GetDataByBHIDDTO } from "src/dto/getDataByBHID.dto";
 import { GetDataByNameDTO } from "src/dto/getDataByName.dto";
 import { GetDataBySteamIDDTO } from "src/dto/getDataBySteamID.dto";
 import { GetDataBySteamURLDTO } from "src/dto/getDataBySteamURL.dto";
-import { BHAPIService } from "src/libs/BHAPI";
 import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { MongoRepository } from "typeorm";
 import { GloryService } from "../glory/glory.service";
@@ -17,7 +21,6 @@ export class StatsService {
 	constructor(
 		@InjectRepository(StatsEntity)
 		private readonly statsRepository: MongoRepository<StatsEntity>,
-		private readonly bhAPIService: BHAPIService,
 		private readonly steamDataService: SteamDataService,
 		private readonly gloryService: GloryService,
 	) {}
@@ -53,25 +56,46 @@ export class StatsService {
 	public async syncStats({
 		brawlhalla_id,
 	}: GetDataByBHIDDTO): Promise<APIRes<StatsEntity>> {
-		const statsData = await this.bhAPIService.getStatsByBHID(brawlhalla_id);
-		const isExists = await this.isStatsExists(brawlhalla_id);
-		const data = new StatsEntity({ ...statsData, lastSynced: Date.now() });
+		try {
+			const { data: statsData } = await getStatsByBHID(brawlhalla_id);
+			const isExists = await this.isStatsExists(brawlhalla_id);
+			const data = new StatsEntity({
+				...statsData,
+				lastSynced: Date.now(),
+			});
 
-		if (isExists) {
-			await this.statsRepository.updateOne(
-				{ brawlhalla_id },
-				{ $set: data },
-			);
-		} else {
-			const repository = this.statsRepository.create(data);
-			await this.statsRepository.save(repository);
+			if (isExists) {
+				await this.statsRepository.updateOne(
+					{ brawlhalla_id },
+					{ $set: data },
+				);
+			} else {
+				const repository = this.statsRepository.create(data);
+				await this.statsRepository.save(repository);
+			}
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: `${data.name} synced`,
+				data: data,
+			};
+		} catch (error) {
+			console.error(error);
+
+			if (error instanceof BHAPIError) {
+				if (error.status == 429)
+					throw new InternalServerErrorException(
+						`Rate limit exceeded. Please try again later.`,
+					);
+				else
+					throw new InternalServerErrorException(
+						`Failed to sync stats for Brawlhalla ID ${brawlhalla_id}: ${error.message}`,
+					);
+			} else
+				throw new InternalServerErrorException(
+					`Failed to sync stats for Brawlhalla ID ${brawlhalla_id}`,
+				);
 		}
-
-		return {
-			statusCode: HttpStatus.OK,
-			message: `${data.name} synced`,
-			data: data,
-		};
 	}
 
 	public async getStatsByID({

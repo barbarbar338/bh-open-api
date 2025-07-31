@@ -1,4 +1,4 @@
-import { IClanMember } from "api-types";
+import { ClanMember } from "@barbarbar338/bhapi";
 import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "ClanEntity" })
@@ -19,7 +19,7 @@ export class ClanEntity {
 	clan_xp: string;
 
 	@Column({ nullable: false })
-	clan: IClanMember[];
+	clan: ClanMember[];
 
 	@Column({ nullable: false })
 	lastSynced: number;

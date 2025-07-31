@@ -1,4 +1,9 @@
-import { I2v2Team, ILegendRanked, RankedRegion, RankedTier } from "api-types";
+import {
+	LegendRanked,
+	RankedRegion,
+	RankedTier,
+	T2v2Team,
+} from "@barbarbar338/bhapi";
 import { Column, Entity, ObjectId, ObjectIdColumn } from "typeorm";
 
 @Entity({ name: "RankedEntity" })
@@ -19,10 +24,10 @@ export class RankedEntity {
 	region_rank: number;
 
 	@Column({ nullable: false })
-	legends: ILegendRanked[];
+	legends: LegendRanked[];
 
 	@Column({ nullable: false })
-	"2v2": I2v2Team[];
+	"2v2": T2v2Team[];
 
 	@Column({ nullable: false })
 	rating: number;

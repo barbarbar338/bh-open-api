@@ -1,3 +1,4 @@
+import { setApiKey } from "@barbarbar338/bhapi";
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import {
@@ -9,6 +10,8 @@ import { AppModule } from "./app.module";
 import config from "./config";
 
 async function bootstrap() {
+	setApiKey(config.BH_API_KEY);
+
 	const app = await NestFactory.create<NestFastifyApplication>(
 		AppModule,
 		new FastifyAdapter(),

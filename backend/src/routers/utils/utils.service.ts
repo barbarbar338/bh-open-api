@@ -1,16 +1,22 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import {
-	APIRes,
-	IRanking1v1,
-	IRanking2v2,
-	IRankingSeasonal,
+	BHAPIError,
+	getClanByID,
+	getRankings,
 	RankedRegion,
-} from "api-types";
+	Ranking1v1,
+	Ranking2v2,
+	RankingSeasonal,
+} from "@barbarbar338/bhapi";
+import {
+	HttpStatus,
+	Injectable,
+	InternalServerErrorException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { APIRes } from "api-types";
 import CONFIG from "src/config";
 import { GetDataByClanIDDTO } from "src/dto/getDataByClanID.dto";
 import { GetDataByRankingOptionsDTO } from "src/dto/getDataByRankingOptions.dto";
-import { BHAPIService } from "src/libs/BHAPI";
 import { MongoRepository } from "typeorm";
 import { Ranked1v1Entity } from "./1v1.entity";
 import { Ranked2v2Entity } from "./2v2.entity";
@@ -28,7 +34,6 @@ export class UtilsService {
 		private readonly clanRepository: MongoRepository<ClanEntity>,
 		@InjectRepository(RankedSeasonalEntity)
 		private readonly rankedSeasonalRepository: MongoRepository<RankedSeasonalEntity>,
-		private readonly bhAPIService: BHAPIService,
 	) {}
 
 	public returnPing(): APIRes<null> {
@@ -70,40 +75,59 @@ export class UtilsService {
 	public async syncRanked1v1Data({
 		region,
 		page,
-	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRanking1v1[]>> {
-		const ranked1v1Data = await this.bhAPIService.get1v1Rankings({
-			region,
-			page,
-		});
-		const isExists = await this.isRanked1v1DataExists(region, page);
-		const data = new Ranked1v1Entity({
-			region,
-			page,
-			data: ranked1v1Data,
-			lastSynced: Date.now(),
-		});
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<Ranking1v1[]>> {
+		try {
+			const { data: ranked1v1Data } = await getRankings({
+				type: "1v1",
+				region,
+				page,
+			});
+			const isExists = await this.isRanked1v1DataExists(region, page);
+			const data = new Ranked1v1Entity({
+				region,
+				page,
+				data: ranked1v1Data,
+				lastSynced: Date.now(),
+			});
 
-		if (isExists) {
-			await this.ranked1v1Repository.updateOne(
-				{ region, page },
-				{ $set: data },
-			);
-		} else {
-			const repository = this.ranked1v1Repository.create(data);
-			await this.ranked1v1Repository.save(repository);
+			if (isExists) {
+				await this.ranked1v1Repository.updateOne(
+					{ region, page },
+					{ $set: data },
+				);
+			} else {
+				const repository = this.ranked1v1Repository.create(data);
+				await this.ranked1v1Repository.save(repository);
+			}
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: `${data.region} ${data.page} synced`,
+				data: data.data,
+			};
+		} catch (error) {
+			console.error(error);
+
+			if (error instanceof BHAPIError) {
+				if (error.status == 429)
+					throw new InternalServerErrorException(
+						`Rate limit exceeded. Please try again later.`,
+					);
+				else
+					throw new InternalServerErrorException(
+						`Failed to sync ranked for Brawlhalla ID ${region} ${page}: ${error.message}`,
+					);
+			} else
+				throw new InternalServerErrorException(
+					`Failed to sync ranked for Brawlhalla ID ${region} ${page}`,
+				);
 		}
-
-		return {
-			statusCode: HttpStatus.OK,
-			message: `${data.region} ${data.page} synced`,
-			data: data.data,
-		};
 	}
 
 	public async getRanked1v1DataByRankingOptions({
 		region,
 		page,
-	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRanking1v1[]>> {
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<Ranking1v1[]>> {
 		const ranked1v1Data = await this.getRanked1v1Data(region, page);
 
 		if (!ranked1v1Data) return this.syncRanked1v1Data({ region, page });
@@ -151,40 +175,59 @@ export class UtilsService {
 	public async syncRanked2v2Data({
 		region,
 		page,
-	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRanking2v2[]>> {
-		const ranked2v2Data = await this.bhAPIService.get2v2Rankings({
-			region,
-			page,
-		});
-		const isExists = await this.isRanked2v2DataExists(region, page);
-		const data = new Ranked2v2Entity({
-			region,
-			page,
-			data: ranked2v2Data,
-			lastSynced: Date.now(),
-		});
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<Ranking2v2[]>> {
+		try {
+			const { data: ranked2v2Data } = await getRankings({
+				type: "2v2",
+				region,
+				page,
+			});
+			const isExists = await this.isRanked2v2DataExists(region, page);
+			const data = new Ranked2v2Entity({
+				region,
+				page,
+				data: ranked2v2Data,
+				lastSynced: Date.now(),
+			});
 
-		if (isExists) {
-			await this.ranked2v2Repository.updateOne(
-				{ region, page },
-				{ $set: data },
-			);
-		} else {
-			const repository = this.ranked2v2Repository.create(data);
-			await this.ranked2v2Repository.save(repository);
+			if (isExists) {
+				await this.ranked2v2Repository.updateOne(
+					{ region, page },
+					{ $set: data },
+				);
+			} else {
+				const repository = this.ranked2v2Repository.create(data);
+				await this.ranked2v2Repository.save(repository);
+			}
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: `${data.region} ${data.page} synced`,
+				data: data.data,
+			};
+		} catch (error) {
+			console.error(error);
+
+			if (error instanceof BHAPIError) {
+				if (error.status == 429)
+					throw new InternalServerErrorException(
+						`Rate limit exceeded. Please try again later.`,
+					);
+				else
+					throw new InternalServerErrorException(
+						`Failed to sync ranked for Brawlhalla ID ${region} ${page}: ${error.message}`,
+					);
+			} else
+				throw new InternalServerErrorException(
+					`Failed to sync ranked for Brawlhalla ID ${region} ${page}`,
+				);
 		}
-
-		return {
-			statusCode: HttpStatus.OK,
-			message: `${data.region} ${data.page} synced`,
-			data: data.data,
-		};
 	}
 
 	public async getRanked2v2DataByRankingOptions({
 		region,
 		page,
-	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRanking2v2[]>> {
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<Ranking2v2[]>> {
 		const ranked2v2Data = await this.getRanked2v2Data(region, page);
 
 		if (!ranked2v2Data) return this.syncRanked2v2Data({ region, page });
@@ -232,40 +275,62 @@ export class UtilsService {
 	public async syncRankedSeasonalData({
 		region,
 		page,
-	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRankingSeasonal[]>> {
-		const rankedSeasonalData = await this.bhAPIService.getSeasonalRankings({
-			region,
-			page,
-		});
-		const isExists = await this.isRankedSeasonalDataExists(region, page);
-		const data = new RankedSeasonalEntity({
-			region,
-			page,
-			data: rankedSeasonalData,
-			lastSynced: Date.now(),
-		});
-
-		if (isExists) {
-			await this.rankedSeasonalRepository.updateOne(
-				{ region, page },
-				{ $set: data },
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<RankingSeasonal[]>> {
+		try {
+			const { data: rankedSeasonalData } = await getRankings({
+				type: "seasonal",
+				region,
+				page,
+			});
+			const isExists = await this.isRankedSeasonalDataExists(
+				region,
+				page,
 			);
-		} else {
-			const repository = this.rankedSeasonalRepository.create(data);
-			await this.rankedSeasonalRepository.save(repository);
-		}
+			const data = new RankedSeasonalEntity({
+				region,
+				page,
+				data: rankedSeasonalData,
+				lastSynced: Date.now(),
+			});
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: `${data.region} ${data.page} synced`,
-			data: data.data,
-		};
+			if (isExists) {
+				await this.rankedSeasonalRepository.updateOne(
+					{ region, page },
+					{ $set: data },
+				);
+			} else {
+				const repository = this.rankedSeasonalRepository.create(data);
+				await this.rankedSeasonalRepository.save(repository);
+			}
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: `${data.region} ${data.page} synced`,
+				data: data.data,
+			};
+		} catch (error) {
+			console.error(error);
+
+			if (error instanceof BHAPIError) {
+				if (error.status == 429)
+					throw new InternalServerErrorException(
+						`Rate limit exceeded. Please try again later.`,
+					);
+				else
+					throw new InternalServerErrorException(
+						`Failed to sync ranked for Brawlhalla ID ${region} ${page}: ${error.message}`,
+					);
+			} else
+				throw new InternalServerErrorException(
+					`Failed to sync ranked for Brawlhalla ID ${region} ${page}`,
+				);
+		}
 	}
 
 	public async getRankedSeasonalDataByRankingOptions({
 		region,
 		page,
-	}: GetDataByRankingOptionsDTO): Promise<APIRes<IRankingSeasonal[]>> {
+	}: GetDataByRankingOptionsDTO): Promise<APIRes<RankingSeasonal[]>> {
 		const rankedSeasonalData = await this.getRankedSeasonalData(
 			region,
 			page,
@@ -309,22 +374,46 @@ export class UtilsService {
 	public async syncClanData({
 		clan_id,
 	}: GetDataByClanIDDTO): Promise<APIRes<ClanEntity>> {
-		const clanData = await this.bhAPIService.getClanByID(clan_id);
-		const isExists = await this.isClanDataExists(clan_id);
-		const data = new ClanEntity({ ...clanData, lastSynced: Date.now() });
+		try {
+			const { data: clanData } = await getClanByID(clan_id);
+			const isExists = await this.isClanDataExists(clan_id);
+			const data = new ClanEntity({
+				...clanData,
+				lastSynced: Date.now(),
+			});
 
-		if (isExists) {
-			await this.clanRepository.updateOne({ clan_id }, { $set: data });
-		} else {
-			const repository = this.clanRepository.create(data);
-			await this.clanRepository.save(repository);
+			if (isExists) {
+				await this.clanRepository.updateOne(
+					{ clan_id },
+					{ $set: data },
+				);
+			} else {
+				const repository = this.clanRepository.create(data);
+				await this.clanRepository.save(repository);
+			}
+
+			return {
+				statusCode: HttpStatus.OK,
+				message: `${data.clan_name} synced`,
+				data: data,
+			};
+		} catch (error) {
+			console.error(error);
+
+			if (error instanceof BHAPIError) {
+				if (error.status == 429)
+					throw new InternalServerErrorException(
+						`Rate limit exceeded. Please try again later.`,
+					);
+				else
+					throw new InternalServerErrorException(
+						`Failed to sync clan for Brawlhalla ID ${clan_id}: ${error.message}`,
+					);
+			} else
+				throw new InternalServerErrorException(
+					`Failed to sync clan for Brawlhalla ID ${clan_id}`,
+				);
 		}
-
-		return {
-			statusCode: HttpStatus.OK,
-			message: `${data.clan_name} synced`,
-			data: data,
-		};
 	}
 
 	public async getDataByClanID({

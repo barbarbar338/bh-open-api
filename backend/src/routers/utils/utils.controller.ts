@@ -1,5 +1,6 @@
+import { Ranking1v1, Ranking2v2 } from "@barbarbar338/bhapi";
 import { Controller, Get, Query } from "@nestjs/common";
-import { APIRes, IRanking1v1, IRanking2v2 } from "api-types";
+import { APIRes } from "api-types";
 import { RateLimit } from "nestjs-rate-limit";
 import CONFIG from "src/config";
 import { GetDataByClanIDDTO } from "src/dto/getDataByClanID.dto";
@@ -19,7 +20,7 @@ export class UtilsController {
 	@Get("ranked1v1")
 	public async getRanked1v1DataByRankingOptions(
 		@Query() getDataByRankingOptionsDTO: GetDataByRankingOptionsDTO,
-	): Promise<APIRes<IRanking1v1[]>> {
+	): Promise<APIRes<Ranking1v1[]>> {
 		return this.utilsService.getRanked1v1DataByRankingOptions(
 			getDataByRankingOptionsDTO,
 		);
@@ -29,14 +30,14 @@ export class UtilsController {
 	@RateLimit(CONFIG.SYNC_RATELIMIT)
 	public async syncRanked1v1DataByRankingOptions(
 		@Query() getDataByRankingOptionsDTO: GetDataByRankingOptionsDTO,
-	): Promise<APIRes<IRanking1v1[]>> {
+	): Promise<APIRes<Ranking1v1[]>> {
 		return this.utilsService.syncRanked1v1Data(getDataByRankingOptionsDTO);
 	}
 
 	@Get("ranked2v2")
 	public async getRanked2v2DataByRankingOptions(
 		@Query() getDataByRankingOptionsDTO: GetDataByRankingOptionsDTO,
-	): Promise<APIRes<IRanking2v2[]>> {
+	): Promise<APIRes<Ranking2v2[]>> {
 		return this.utilsService.getRanked2v2DataByRankingOptions(
 			getDataByRankingOptionsDTO,
 		);
@@ -46,7 +47,7 @@ export class UtilsController {
 	@RateLimit(CONFIG.SYNC_RATELIMIT)
 	public async syncRanked2v2DataByRankingOptions(
 		@Query() getDataByRankingOptionsDTO: GetDataByRankingOptionsDTO,
-	): Promise<APIRes<IRanking2v2[]>> {
+	): Promise<APIRes<Ranking2v2[]>> {
 		return this.utilsService.syncRanked2v2Data(getDataByRankingOptionsDTO);
 	}
 

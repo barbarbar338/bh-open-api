@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { BHAPIService } from "src/libs/BHAPI";
 import { SteamDataEntity } from "src/routers/steamdata/steamdata.entity";
 import { SteamDataService } from "src/routers/steamdata/steamdata.service";
 import { GloryModule } from "../glory/glory.module";
@@ -14,7 +13,7 @@ import { StatsService } from "./stats.service";
 		GloryModule,
 	],
 	controllers: [StatsController],
-	providers: [StatsService, BHAPIService, SteamDataService],
+	providers: [StatsService, SteamDataService],
 	exports: [TypeOrmModule, StatsService],
 })
 export class StatsModule {}
