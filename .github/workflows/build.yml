@@ -1,4 +1,4 @@
-name: Build and Push Multi-Arch Docker Image to GHCR
+name: Build and Push Multi-Arch Docker Images to GHCR
 
 on:
   push:
@@ -34,10 +34,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push Frontend Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile.frontend
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/bhapi-fe:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+
+      - name: Build and push Backend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.backend
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/bhapi:latest

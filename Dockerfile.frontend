@@ -1,0 +1,19 @@
+FROM node:lts-alpine AS frontend-builder
+
+WORKDIR /app
+
+COPY frontend/package.json frontend/yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY frontend .
+RUN yarn build
+
+FROM node:lts-alpine
+
+RUN npm i -g serve
+
+WORKDIR /app
+
+COPY --from=frontend-builder /app/build ./build
+
+CMD ["serve", "-s", "build"]

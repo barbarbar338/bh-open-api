@@ -1,0 +1,17 @@
+FROM node:lts-alpine AS backend-builder
+
+WORKDIR /app
+
+COPY backend/package.json backend/yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY backend .
+RUN yarn build
+
+FROM node:lts-alpine
+
+WORKDIR /app
+
+COPY --from=backend-builder /app .
+
+CMD ["npm", "run", "start"]
