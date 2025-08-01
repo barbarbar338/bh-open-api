@@ -1,6 +1,7 @@
 # 🔥 Brawlhalla Open API (Server)
 
 - An unofficial API server with no connection to Brawlhalla and its developers, prepared for easier and unlimited access to Brawlhalla API services. ✅
+- See <https://bhapi.338.rocks> for live version.
 
 ## 💢 SelfHost Using docker-compose
 
