@@ -1,6 +1,7 @@
+import { createKeyv as createKeyvRedis } from "@keyv/redis";
+import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { RateLimiterGuard, RateLimiterModule } from "nestjs-rate-limit";
 import CONFIG from "./config";
 import { GloryModule } from "./routers/glory/glory.module";
@@ -12,18 +13,15 @@ import { UtilsModule } from "./routers/utils/utils.module";
 
 @Module({
 	imports: [
+		CacheModule.register({
+			isGlobal: true,
+			stores: [createKeyvRedis(CONFIG.REDIS_URL)],
+			ttl: 1000 * 10, //1000 * 60 * 5,
+		}),
 		RateLimiterModule.forRoot({
 			points: 60,
 			duration: 60 * 10,
 			keyPrefix: "global",
-		}),
-		TypeOrmModule.forRoot({
-			type: "mongodb",
-			url: CONFIG.MONGODB_URI,
-			database: "bhapi",
-			synchronize: true,
-			logger: "debug",
-			autoLoadEntities: true,
 		}),
 		LegendsModule,
 		StatsModule,
@@ -32,6 +30,12 @@ import { UtilsModule } from "./routers/utils/utils.module";
 		SteamDataModule,
 		UtilsModule,
 	],
-	providers: [{ provide: APP_GUARD, useClass: RateLimiterGuard }],
+	providers: [
+		{ provide: APP_GUARD, useClass: RateLimiterGuard },
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: CacheInterceptor,
+		},
+	],
 })
 export class AppModule {}

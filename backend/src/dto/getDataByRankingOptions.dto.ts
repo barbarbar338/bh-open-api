@@ -1,5 +1,5 @@
 import { RankedRegion } from "@barbarbar338/bhapi";
-import { IsDefined } from "class-validator";
+import { IsDefined, IsEnum } from "class-validator";
 
 export class GetDataByRankingOptionsDTO {
 	@IsDefined()
@@ -7,4 +7,8 @@ export class GetDataByRankingOptionsDTO {
 
 	@IsDefined()
 	page: string | number;
+
+	@IsDefined()
+	@IsEnum(["1v1", "2v2", "seasonal"])
+	type: "1v1" | "2v2" | "seasonal";
 }
