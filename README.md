@@ -1,4 +1,4 @@
-# 🔥 Brawlhalla Open API (Server)
+# 🔥 Brawlhalla Open API
 
 - An unofficial API server with no connection to Brawlhalla and its developers, prepared for easier and unlimited access to Brawlhalla API services. ✅
 - See <https://bhapi.338.rocks> for live version.
@@ -14,11 +14,7 @@ services:
       - "5555:5555"
     environment:
       - BH_API_KEY=<get it from brawlhalla devs>
-      - MONGODB_URI=mongodb://bhapi:bhapi@mongo:27017/BHAPI?authSource=admin
-    depends_on:
-      - mongo
-    networks:
-      - bhapi
+      - REDIS_URL=redis://redis:6379 # create your own redis server
 
   bhapi-fe:
     image: ghcr.io/barbarbar338/bhapi-fe:latest
@@ -27,39 +23,6 @@ services:
       - "3000:3000"
     depends_on:
       - bhapi
-    networks:
-      - bhapi
-
-  mongo:
-    image: mongo:latest
-    restart: unless-stopped
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=bhapi
-      - MONGO_INITDB_ROOT_PASSWORD=bhapi
-    volumes:
-      - mongo_data:/data/db
-    networks:
-      - bhapi
-
-  mongo_express:
-    image: mongo-express:latest
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=bhapi
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=bhapi
-      - ME_CONFIG_MONGODB_SERVER=mongo
-    depends_on:
-      - mongo
-    networks:
-      - bhapi
-
-volumes:
-  mongo_data:
-
-networks:
-  bhapi:
 ```
 
 ## 🔗 Contributing / Issues / Ideas

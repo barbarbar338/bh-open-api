@@ -1,5 +1,5 @@
 const config = {
-    apiVersion: "v2",
+    apiVersion: "api",
 };
 
 export default config;
