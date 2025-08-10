@@ -16,7 +16,7 @@ import { UtilsModule } from "./routers/utils/utils.module";
 		CacheModule.register({
 			isGlobal: true,
 			stores: [createKeyvRedis(CONFIG.REDIS_URL)],
-			ttl: 1000 * 10, //1000 * 60 * 5,
+			ttl: 1000 * 60 * 10,
 		}),
 		RateLimiterModule.forRoot({
 			points: 60,
