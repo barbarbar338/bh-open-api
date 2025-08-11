@@ -6,6 +6,7 @@
 	},
 	"dependencies": {
 		"@barbarbar338/bhapi": "^1.2.0",
+		"@dotenvx/dotenvx": "^1.48.4",
 		"@keyv/redis": "^5.1.0",
 		"@nestjs/cache-manager": "^3.0.1",
 		"@nestjs/common": "^11.1.6",
@@ -14,7 +15,7 @@
 		"cache-manager": "^7.1.1",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.2",
-		"dotenv": "^17.2.1",
+		"envalid": "^8.1.0",
 		"morgan": "^1.10.1",
 		"nestjs-rate-limit": "^1.1.1",
 		"reflect-metadata": "^0.2.2",
@@ -52,12 +53,12 @@
 	},
 	"scripts": {
 		"build": "nest build",
-		"dev": "nest start --watch",
+		"dev": "dotenvx run -f .env.dev -- nest start --watch",
 		"format": "prettier --write .",
 		"lint": "eslint . --fix",
 		"prebuild": "rimraf dist",
-		"start": "node dist/main",
+		"start": "dotenvx run -f .env.prod -- node dist/main",
 		"update": "taze latest -w"
 	},
-	"version": "3.0.0"
+	"version": "3.0.1"
 }
