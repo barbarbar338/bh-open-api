@@ -1,3 +1,5 @@
+# Actions updated using `npx actions-up`
+
 name: Publish to Docker Hub and GHCR
 
 on:
@@ -13,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
@@ -31,7 +33,7 @@ jobs:
       # Extract metadata for tagging
       - name: Docker meta for fe
         id: meta-fe
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: |
             barbarbar338/bhapi-fe
@@ -46,7 +48,7 @@ jobs:
 
       - name: Docker meta for be
         id: meta-be
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: |
             barbarbar338/bhapi
@@ -61,19 +63,19 @@ jobs:
 
       # Builder setup
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry (GHCR)
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -81,14 +83,14 @@ jobs:
 
       # FE build
       - name: Cache frontend layers
-        uses: actions/cache@v4
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: /tmp/.buildx-cache-fe
           key: ${{ runner.os }}-buildx-fe-${{ github.sha }}
           restore-keys: ${{ runner.os }}-buildx-fe-
 
       - name: Build & push Frontend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
           file: ./Dockerfile.frontend
@@ -106,14 +108,14 @@ jobs:
 
       # BE build
       - name: Cache backend layers
-        uses: actions/cache@v4
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: /tmp/.buildx-cache-be
           key: ${{ runner.os }}-buildx-be-${{ github.sha }}
           restore-keys: ${{ runner.os }}-buildx-be-
 
       - name: Build & push Backend
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
           file: ./Dockerfile.backend
