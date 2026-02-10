@@ -1,58 +1,130 @@
-name: Build and Push Multi-Arch Docker Images to GHCR
+name: Publish to Docker Hub and GHCR
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip-build]')"
     permissions:
       contents: read
       packages: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # Check for version
+      - name: Extract version from tag
+        id: get_version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Stop if not version tag
+        if: "!startsWith(github.ref, 'refs/tags/v')"
+        run: |
+          echo "Not a version tag → skipping publish"
+          exit 1
+
+      # Extract metadata for tagging
+      - name: Docker meta for fe
+        id: meta-fe
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            barbarbar338/bhapi-fe
+            ghcr.io/${{ github.repository_owner }}/bhapi-fe
+          flavor: |
+            latest=auto
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Docker meta for be
+        id: meta-be
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            barbarbar338/bhapi
+            ghcr.io/${{ github.repository_owner }}/bhapi
+          flavor: |
+            latest=auto
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      # Builder setup
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Log in to GitHub Container Registry
+      - name: Login to GitHub Container Registry (GHCR)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Frontend Docker image
-        uses: docker/build-push-action@v5
+      # FE build
+      - name: Cache frontend layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache-fe
+          key: ${{ runner.os }}-buildx-fe-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-fe-
+
+      - name: Build & push Frontend
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile.frontend
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/bhapi-fe:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+          tags: ${{ steps.meta-fe.outputs.tags }}
+          labels: ${{ steps.meta-fe.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache-fe
+          cache-to: type=local,dest=/tmp/.buildx-cache-fe-new,mode=max
 
-      - name: Build and push Backend Docker image
-        uses: docker/build-push-action@v5
+      - name: Move frontend cache
+        run: |
+          rm -rf /tmp/.buildx-cache-fe
+          mv /tmp/.buildx-cache-fe-new /tmp/.buildx-cache-fe
+
+      # BE build
+      - name: Cache backend layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache-be
+          key: ${{ runner.os }}-buildx-be-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-be-
+
+      - name: Build & push Backend
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile.backend
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/bhapi:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+          tags: ${{ steps.meta-be.outputs.tags }}
+          labels: ${{ steps.meta-be.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache-be
+          cache-to: type=local,dest=/tmp/.buildx-cache-be-new,mode=max
+
+      - name: Move backend cache
+        run: |
+          rm -rf /tmp/.buildx-cache-be
+          mv /tmp/.buildx-cache-be-new /tmp/.buildx-cache-be
